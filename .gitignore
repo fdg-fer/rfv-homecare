@@ -1,0 +1,13 @@
+# Ignorar arquivos de configuração sensíveis
+.env
+
+# Ignorar arquivos de cache do Python
+__pycache__/
+*.pyc
+
+# Ignorar pastas de dados grandes (opcional)
+*.csv
+*.xlsx
+*.pdf
+*.sql
+*.pbix
