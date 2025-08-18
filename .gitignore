@@ -9,6 +9,5 @@ __pycache__/
 *.csv
 *.xlsx
 *.pdf
-*.sql
 *.pbix
 *.pptx
