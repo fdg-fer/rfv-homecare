@@ -9,7 +9,7 @@ Por meio dessa metodologia, é possível mapear padrões de comportamento, gerar
 ### As variáveis chaves utilizadas são:
 
 
-#### Recência  
+#### 📆 Recência  
 A variável mais determinante da RFV. Ela descreve a etapa em que o cliente se encontra, que pode ser definida em três ciclos:
 
 1. **Clientes Futuros**  
@@ -18,14 +18,14 @@ A variável mais determinante da RFV. Ela descreve a etapa em que o cliente se e
 
 ---
 
-#### Frequência  
+#### 🛍 Frequência  
 Define o número de vezes que o cliente realizou uma compra. 
 
 Esse indicador está altamente relacionado à **qualidade do produto ou serviço prestado**, demonstrando o quanto a empresa está presente na mente do cliente ao decidir fazer negócios novamente.  
 
 ---
 
-#### Valor  
+#### 💰 Valor  
 Corresponde ao **valor total gasto** em produtos ou serviços.  
 Esse indicador permite identificar consumidores mais ou menos lucrativos.  
 
