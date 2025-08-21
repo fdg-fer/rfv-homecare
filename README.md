@@ -81,7 +81,7 @@ No **PostgreSQL**, foram geradas as variáveis principais:
 - `valor_monetario`: soma total gasta pelo cliente  
 - `ticket_medio`: valor médio gasto por pedido  
 
- ![Tabela_Base](<img/tabela_02.png>)
+ ![Tabela_rfv](<img/tabela_02.png>)
 
 Exemplo do SQL:
 ```sql
@@ -258,6 +258,8 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Tabela detalhada**: cliente, recência, frequência, valor e segmento
 - **Barras horizontais**: distribuição por segmento
 
+ ![Tabela_rfv](<img/dash_01.png>)
+
 #### Aba 2 – Produtos
 
 - **Ranking de produtos mais vendidos** (volume e valor)
@@ -265,6 +267,7 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Comparativo Hospitais × Clínicas** por categoria de produto
 - **Distribuição por categoria**: descartáveis, insumos e equipamentos
 
+ ![Tabela_rfv](<img/dash_02.png>)
 
 ### 🚀 Conclusão
 
