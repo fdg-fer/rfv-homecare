@@ -1,4 +1,4 @@
-## Por que utilizar Análise RFV?
+## 🎯 Por que utilizar Análise RFV?
 
 O objetivo desta análise é segmentar clientes de forma estratégica, permitindo que o marketing desenvolva ações mais precisas de relacionamento, retenção e fidelização.
 
@@ -28,8 +28,8 @@ Esse indicador está altamente relacionado à **qualidade do produto ou serviço
 
 #### 💰 Valor  
 Corresponde ao **valor total gasto** em produtos ou serviços.  
-Esse indicador permite identificar consumidores mais ou menos lucrativos.  
 
+Esse indicador permite identificar consumidores mais ou menos lucrativos.  
 Somente a variável de Valor é capaz de estabelecer uma **hierarquia clara**, quando analisada em conjunto com Recência e Frequência.  
 
 ---
@@ -40,7 +40,6 @@ A metodologia **RFV** é a base para qualquer modelo preditivo de comportamento 
 ---
 
 👉 E você, já utiliza RFV na sua estratégia de clientes?<br>
-<br>
 <br>
 
 ---
@@ -55,15 +54,22 @@ A análise tem como objetivo **segmentar clientes por comportamento de compra**,
 
 ---
 
+### 🛠️ Tecnologias Utilizadas
+
+- **Banco de Dados**: PostgreSQL
+- **Linguagem**: Python (pandas, numpy, SQLAlchemy)
+- **Visualização**: Power BI
+- **Versionamento e Documentação**: GitHub
+
+---
+
 ## ⚙️ Pipeline Analítico
 
 ### 1. Estrutura da Base
 A base fictícia contém **1.000 registros de venda** e **67 clientes**.  
 Cada registro inclui:
 
-- `id_cliente`, `nome_cliente`, `tipo_cliente`  
-- `id_produto`, `nome_produto`, `categoria_produto`  
-- `quantidade`, `valor_produto`, `data_venda`
+ ![Tabela_Base](<img/tabela_01.png>)
 
 ---
 
@@ -75,48 +81,89 @@ No **PostgreSQL**, foram geradas as variáveis principais:
 - `valor_monetario`: soma total gasta pelo cliente  
 - `ticket_medio`: valor médio gasto por pedido  
 
+ ![Tabela_Base](<img/tabela_02.png>)
+
 Exemplo do SQL:
 ```sql
-WITH convert_data AS (
-    SELECT id_cliente, TO_DATE(data_venda, 'YYYY-MM-DD') AS data_venda
-    FROM vendas_homecare
-),
-data_final_base AS (
-    SELECT MAX(data_venda) AS data_final_base FROM convert_data
-),
-data_maxima AS (
-    SELECT id_cliente, MAX(data_venda) AS data_max
-    FROM convert_data GROUP BY id_cliente
-),
-rfv AS (
-    SELECT id_cliente, COUNT(*) AS qtd_pedidos,
-           ROUND(SUM(valor)::numeric, 2) AS valor_monetario
-    FROM vendas_homecare GROUP BY id_cliente
+CREATE OR REPLACE VIEW tabela_RFV AS (
+	-- converte a coluna data_venda para data
+	WITH convert_data as(
+		SELECT id_cliente, nome_cliente, TO_DATE(data_venda, 'YYYY-MM-DD') AS data_venda
+		FROM base_vendas_clientes
+	),
+	-- data mais recente da base
+	data_final_base AS(
+		SELECT 
+		MAX(data_venda) AS data_final_base 
+		FROM convert_data	
+	),
+	-- pegar a data mais recente de compra de cada cliente
+	data_maxima AS (
+		SELECT
+		id_cliente,
+		nome_cliente,
+		MAX(data_venda) AS data_max
+		FROM convert_data
+		GROUP BY id_cliente, nome_cliente
+	),	
+	-- agregações 
+	rfv AS (
+		SELECT 
+		id_cliente,
+		nome_cliente,
+		COUNT(*) AS qtd_pedidos,
+		ROUND(SUM(valor_produto)::numeric, 2) AS valor_monetario
+		FROM base_vendas_clientes
+		GROUP BY id_cliente, nome_cliente
+	)
+	-- tabela final
+	SELECT 
+		rfv.id_cliente,
+		rfv.nome_cliente,
+		rfv.qtd_pedidos,  -- frequencia
+		rfv.valor_monetario, -- valor monetario
+		dm.data_max,
+		df.data_final_base - dm.data_max AS recencia_dias, -- recencia
+		round(rfv.valor_monetario::numeric/rfv.qtd_pedidos,2) AS ticket_medio,
+		df.data_final_base
+	FROM rfv 
+	LEFT JOIN data_maxima AS dm ON rfv.nome_cliente = dm.nome_cliente
+	CROSS JOIN data_final_base AS df
 )
-SELECT rfv.id_cliente, rfv.qtd_pedidos, rfv.valor_monetario,
-       df.data_final_base - dm.data_max AS recencia,
-       ROUND(rfv.valor_monetario::numeric/rfv.qtd_pedidos, 2) AS ticket_medio
-FROM rfv
-LEFT JOIN data_maxima dm ON rfv.id_cliente = dm.id_cliente
-CROSS JOIN data_final_base df;
 ````
 
 ### 3. Scores RFV (Python)
 
+A definição dos scores de 1 a 5 não foi criada de forma deliberada, cada varíável passou por uma análise exploratória e com base na distribuição. 
+
 **Recência (R)**: cortes dinâmicos por quantis (quanto mais recente, maior o score).
+- **Nota 5** = O primeiro quartil da  distribuição foi de aprox. 16 dias. Definição com recência **≤ 20 dias**, arredondando para cima para não penalizar clientes muito próximos do corte.
+- **Nota 4** = Definido com base na mediana que foi em torno de **33 dias**.
+- **Nota 3** = Defini com base no terceiro quartil que foi de **64 dias**.
+- **Nota 2** = Essa nota foi baseada no critério de média + desvio-padrão, que resultou em **146 dias**.
+- **Nota 1** = Tudo que for **maior** que **146 dias**.
+
+
+
 **Frequência (F)**: cortes baseados na distribuição observada (clientes recorrentes = maior score).
+
+
+
 **Valor Monetário (V)**: abordagem híbrida, usando média ± desvio padrão para definir faixas.
 
 Exemplo aplicado ao Valor Monetário:
 
 ````python
-def calcular_vm_dinamica(vm):
+def calcular_vm(vm):
     if vm <= 120000: return 1
     if vm <= 288000: return 2
     if vm <= 460000: return 3
     if vm <= 630000: return 4
     else: return 5 
 ````
+
+
+
 
 ### 4. Segmentação Final
 
@@ -156,12 +203,6 @@ A partir dos scores e quintis, os clientes foram classificados em **7 segmentos*
 - **Prestes a Hibernar** → monitoramento e alertas para não perder clientes (descontos de   retenção).
 - **Hibernando** → avaliar custo de reativar vs. aquisição de novos clientes.
 
-### 🛠️ Tecnologias Utilizadas
-
-- **Banco de Dados**: PostgreSQL
-- **Linguagem**: Python (pandas, numpy, SQLAlchemy)
-- **Visualização**: Power BI
-- **Versionamento e Documentação**: GitHub
 
 ### 🚀 Conclusão
 
