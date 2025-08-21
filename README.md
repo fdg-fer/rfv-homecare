@@ -8,6 +8,7 @@ Por meio dessa metodologia, é possível mapear padrões de comportamento, gerar
 
 ### As variáveis chaves utilizadas são:
 
+---
 
 #### 📆 Recência  
 A variável mais determinante da RFV. Ela descreve a etapa em que o cliente se encontra, que pode ser definida em três ciclos:
@@ -43,41 +44,143 @@ A metodologia **RFV** é a base para qualquer modelo preditivo de comportamento 
 <br>
 
 ---
-### Análise RFV para segmentação clientes de uma indústria de produtos hospitalares.
+# 📊 Análise RFV – Indústria de Produtos Hospitalares
+
+## 📌 Contexto do Projeto
+Este projeto aplica a análise **RFV (Recência, Frequência e Valor)** para clientes de uma **indústria fictícia de produtos hospitalares**, que vende insumos, descartáveis e equipamentos médicos para **clínicas pequenas e hospitais grandes**.
+
+A análise tem como objetivo **segmentar clientes por comportamento de compra**, permitindo identificar perfis estratégicos e definir ações de marketing e vendas mais assertivas.
+
+📌 Recorte de tempo da base: **12 meses (último ano)**
 
 ---
 
-#### ⚕️ Especificidades do Home Care e Produtos Hospitalares para RFV
+## ⚙️ Pipeline Analítico
 
-- **Recorrência baseada na necessidade clínica**
-  - Diferente de um e-commerce comum, a compra de produtos hospitalares é muitas vezes recorrente (luvas, seringas, sondas, gazes, EPIs etc.).
-  - Isso significa que a frequência de pedidos tem um peso grande para medir fidelização.
-  - Clientes que compram sempre os mesmos insumos em ciclos previsíveis são estratégicos (contratos ou compras mensais fixas).
+### 1. Estrutura da Base
+A base fictícia contém **1.000 registros de venda** e **67 clientes**.  
+Cada registro inclui:
 
-- **Valor do ticket médio pode variar bastante**
-  - Uma clínica pequena pode comprar R$ 500 no mês, enquanto um hospital pode gastar R$ 50.000.
-  - Por isso, na métrica Valor (Monetário), faz mais sentido olhar para o valor acumulado (quanto já gastou ao longo do tempo) do que apenas para o ticket médio.
-  - Isso evita distorções de um cliente que comprou uma vez um item caro, mas não é recorrente.
+- `id_cliente`, `nome_cliente`, `tipo_cliente`  
+- `id_produto`, `nome_produto`, `categoria_produto`  
+- `quantidade`, `valor_produto`, `data_venda`
 
-- **Recência é crítica por causa da concorrência**
-  - Clínicas e hospitais podem mudar de fornecedor se perceberem atrasos, rupturas ou preços melhores.
-  - Um cliente que não compra há 3 meses pode significar que já trocou de fornecedor.
-  - Logo, a recência aqui é muito mais um sinal de retenção vs. risco de churn.
+---
 
-- **Produtos críticos e não críticos**
-  - Alguns insumos são de uso emergencial e contínuo (luvas, gazes, sondas).
-  - Outros são de baixa rotatividade (equipamentos maiores, como aspiradores ou bombas de infusão).
-  - Essa diferença pode ser usada como regra de negócio para interpretar o perfil de consumo:
-    - Cliente que compra só emergenciais → baixo ticket, alta recorrência.
-    - Cliente que compra equipamentos → alto ticket, baixa recorrência.
-  - Ambos podem ser estratégicos, mas em segmentos diferentes.
+### 2. Construção da Tabela RFV
+No **PostgreSQL**, foram geradas as variáveis principais:
 
-- **Ciclo de compras pode estar atrelado a contratos**
-  - Muitos hospitais e clínicas fecham contratos periódicos com fornecedores.
-  - Nesse caso, clientes com alta frequência e valor alto podem representar contratos ativos, que merecem monitoramento especial.
+- `recencia`: dias desde a última compra  
+- `frequencia`: número total de pedidos  
+- `valor_monetario`: soma total gasta pelo cliente  
+- `ticket_medio`: valor médio gasto por pedido  
 
-- **Churn pode ser precoce**
-  - No varejo, se o cliente não compra há 6 meses, ele pode voltar.
-  - No hospitalar, se não compra há 2–3 meses, pode significar que migrou de fornecedor.
-  - Então, os limiares de recência precisam ser ajustados para janelas menores.
+Exemplo do SQL:
+```sql
+WITH convert_data AS (
+    SELECT id_cliente, TO_DATE(data_venda, 'YYYY-MM-DD') AS data_venda
+    FROM vendas_homecare
+),
+data_final_base AS (
+    SELECT MAX(data_venda) AS data_final_base FROM convert_data
+),
+data_maxima AS (
+    SELECT id_cliente, MAX(data_venda) AS data_max
+    FROM convert_data GROUP BY id_cliente
+),
+rfv AS (
+    SELECT id_cliente, COUNT(*) AS qtd_pedidos,
+           ROUND(SUM(valor)::numeric, 2) AS valor_monetario
+    FROM vendas_homecare GROUP BY id_cliente
+)
+SELECT rfv.id_cliente, rfv.qtd_pedidos, rfv.valor_monetario,
+       df.data_final_base - dm.data_max AS recencia,
+       ROUND(rfv.valor_monetario::numeric/rfv.qtd_pedidos, 2) AS ticket_medio
+FROM rfv
+LEFT JOIN data_maxima dm ON rfv.id_cliente = dm.id_cliente
+CROSS JOIN data_final_base df;
+````
+
+### 3. Scores RFV (Python)
+
+**Recência (R)**: cortes dinâmicos por quantis (quanto mais recente, maior o score).<br>
+**Frequência (F)**: cortes baseados na distribuição observada (clientes recorrentes = maior score).<br>
+**Valor Monetário (V)**: abordagem híbrida, usando média ± desvio padrão para definir faixas.
+
+Exemplo aplicado ao Valor Monetário:
+
+```python
+def calcular_vm_dinamica(vm):
+    if vm <= 120000: return 1
+    if vm <= 288000: return 2
+    if vm <= 460000: return 3
+    if vm <= 630000: return 4
+    else: return 5
+```
+
+### 4. Segmentação Final
+
+A partir dos scores e quintis, os clientes foram classificados em **7 segmentos**:
+
+1. **Campeões** – muito recentes, alta frequência e alto valor.  
+2. **Clientes Leais** – recentes, compras regulares, valor médio/alto.  
+3. **Promissores** – recentes, mas baixo valor/frequência.  
+4. **Necessitam de Atenção** – recência média, frequência/valor medianos.  
+5. **Em Risco** – gastavam alto, mas estão há muito tempo sem comprar.  
+6. **Prestes a Hibernar** – baixa recência, baixo/médio valor.  
+7. **Hibernando** – muito tempo sem comprar, baixo valor e frequência.  
+
+
+### 📊 Visualização – Power BI
+#### Aba 1 – RFV (Clientes)
+
+- **KPIs (cards)**: total de clientes, ticket médio, valor acumulado, percentual de campeões
+
+- **Gráfico de dispersão**: recência × frequência/valor (cores por segmento)
+
+- **Tabela detalhada**: cliente, recência, frequência, valor e segmento
+
+- **Barras horizontais**: distribuição por segmento
+
+#### Aba 2 – Produtos
+
+- **Ranking de produtos mais vendidos** (volume e valor)
+
+- **Filtro por segmento de cliente** (ex.: o que os Campeões mais compram)
+
+- **Comparativo Hospitais × Clínicas** por categoria de produto
+
+- **Distribuição por categoria**: descartáveis, insumos e equipamentos
+
+### 📌 Insights de Negócio por Segmento
+
+- **Campeões** → manter engajamento com benefícios exclusivos, early access a novos produtos, suporte diferenciado.
+
+- **Clientes Leais** → estimular upsell (kits, pacotes), programas de fidelidade.
+
+- **Promissores** → nutrir relacionamento (promoções de entrada, descontos progressivos).
+
+- **Necessitam de Atenção** → campanhas personalizadas para aumentar frequência (ex.: kits emergenciais).
+
+- **Em Risco** → ações de reativação (ofertas agressivas, contato direto do comercial).
+
+- **Prestes a Hibernar** → monitoramento e alertas para não perder clientes (descontos de retenção).
+
+- **Hibernando** → avaliar custo de reativar vs. aquisição de novos clientes.
+
+### 🛠️ Tecnologias Utilizadas
+
+- **Banco de Dados**: PostgreSQL
+
+- **Linguagem**: Python (pandas, numpy, SQLAlchemy)
+
+- **Visualização**: Power BI
+
+- **Versionamento e Documentação**: GitHub
+
+### 🚀 Conclusão
+
+A análise RFV permitiu **segmentar os clientes e identificar perfis estratégicos**, trazendo clareza sobre quem são os campeões, quem está em risco e quem pode ser perdido.
+Além disso, a segunda aba focada em **produtos** mostrou **padrões de consumo** relevantes para apoiar **estratégias comerciais**.
+
 

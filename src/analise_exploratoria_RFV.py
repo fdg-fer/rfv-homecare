@@ -25,6 +25,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy
 
+ 
 recencia = df['recencia_dias']
 frequencia = df['qtd_pedidos']
 valor = df['valor_monetario']

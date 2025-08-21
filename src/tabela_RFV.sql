@@ -1,7 +1,7 @@
 create or replace view tabela_RFV AS (
 	-- Converte a coluna data_venda para data
 	WITH convert_data as(
-		select nome_cliente, TO_DATE(data_venda, 'YYYY-MM-DD') as data_venda
+		select id_cliente, nome_cliente, TO_DATE(data_venda, 'YYYY-MM-DD') as data_venda
 		from base_vendas_clientes
 
 	),
@@ -15,24 +15,27 @@ create or replace view tabela_RFV AS (
 	-- pegar a data mais recente de compra de cada cliente
 	data_maxima as (
 		select
+		id_cliente,
 		nome_cliente,
 		max(data_venda) as data_max
 		--current_date - max(data_venda) as recencia_dias
 		from convert_data
-		group by nome_cliente
+		group by id_cliente, nome_cliente
 		
 	
 	),	
 	rfv as (
 		select 
+		id_cliente,
 		nome_cliente,
 		count(*) as qtd_pedidos,
 		ROUND(SUM(valor_produto)::numeric, 2) AS valor_monetario
 		from base_vendas_clientes
-		group by nome_cliente
+		group by id_cliente, nome_cliente
 	)
 	
 	select 
+		rfv.id_cliente,
 		rfv.nome_cliente,
 		rfv.qtd_pedidos,
 		rfv.valor_monetario,

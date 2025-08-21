@@ -25,13 +25,13 @@ recencia = df['recencia_dias']
 
 
 def calcular_recencia_dinamica(recencia):
-    if recencia <= 15:   # 1 quartil
+    if recencia <= 16:   # 1 quartil
         return 5
-    if recencia <= 25:  # abaixo da mediana
+    if recencia <= 33:  # abaixo da mediana
         return 4
-    if recencia <= 40:  # abaixo do 3 quartil
+    if recencia <= 64:  # abaixo do 3 quartil
         return 3
-    if recencia <= 60: # 4 desvios padrao
+    if recencia <= 146: # 4 desvios padrao
         return 2     
     else:
         return 1
@@ -49,13 +49,13 @@ frequencia.describe()
 
 
 def calcular_frequencia_dinamica(frequencia):
-    if frequencia >= 40:
+    if frequencia > 18:
         return 5
-    elif frequencia >= 19:
+    elif frequencia >= 16:
         return 4
-    elif frequencia >= 10:
+    elif frequencia >= 13:
         return 3
-    elif frequencia >= 8:
+    elif frequencia >= 11:
         return 2
     else:
         return 1
@@ -70,90 +70,110 @@ vm = df['valor_monetario']
 
 
 def calcular_vm_dinamica(vm):
-    if vm >= 30000:
-        return 5  
-    if vm >= 18000:
+    if vm <= 120000: # média - 1 desvio
+        return 1  
+    if vm <= 250000: # até a média
+        return 2 
+    if vm <= 400000: # média + 1 desvio
+        return 3  
+    if vm <= 600000: # média + 2 desvios
         return 4  
-    if vm >= 13000:
-        return 3   
-    if vm >= 7300:
-        return 2   
     else:
-        return 1
+        return 5     # acima de 630k 
 
 # Aplicaçâo
+import numpy as np
 
 df['vm_score'] = df['valor_monetario'].apply(calcular_vm_dinamica)
 
 
-df['rfv_score'] = df['recencia_score'] + df['frequencia_score'] + df['vm_score']
-df['Y_FM_quintis'] = (df['frequencia_score'] + df['vm_score']) / 2
+df['rfv_score']   = df['recencia_score'] + df['frequencia_score'] + df['vm_score']
+df['Y_FM_score']  = (df['frequencia_score'] + df['vm_score']) / 2.0   # contínuo (pode ter 1.5, 2.0, 2.5, ...)
 
-#----------------------------------------------------------------------------------------------------------------#
+# -------------------------------------------
+# 1) QUINTIS: calcule sobre o CONTÍNUO
+#    (não sobre as colunas já discretizadas 1..5)
+# -------------------------------------------
 
-import numpy as np
+# Recency: se quiser quintil do score 1..5, melhor usar as bordas fixas
+# Caso queira quintil "de verdade", use a MÉTRICA CONTÍNUA (ex.: dias de recência)
+# Exemplo abaixo usa bordas fixas para o score 1..5:
+quintis_recency_edges = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
 
-# Calculando os quintis dos scores
-quintis_recency = np.percentile(df['recencia_score'], [20, 40, 60, 80, 100])
-quintis_Y_FM = np.percentile(df['Y_FM_quintis'], [20, 40, 60, 80, 100])
-
-# Garantir que os bins são únicos (caso haja repetição de valores)
-quintis_recency = np.unique(quintis_recency)
+# Y_FM: quintil sobre o score contínuo Y_FM_score
+quintis_Y_FM = np.percentile(df['Y_FM_score'], [20, 40, 60, 80, 100])
 quintis_Y_FM = np.unique(quintis_Y_FM)
-
-# Em caso de pouca variação, define manualmente os limites
-if len(quintis_recency) < 6:
-    quintis_recency = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
-
 if len(quintis_Y_FM) < 6:
-    quintis_Y_FM = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
+    # fallback para bins estáveis cobrindo notas 1..5
+    quintis_Y_FM_edges = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
+else:
+    # quando vierem 5 cortes únicos, precisamos de 6 arestas.
+    # Acrescente a aresta inferior. Como Y_FM_score vai de 1..5 (média de scores 1..5),
+    # use 0.5 como limite inferior "seguro".
+    quintis_Y_FM_edges = np.concatenate(([0.5], quintis_Y_FM))
 
-df['recency_quintis'] = pd.cut(
+# -------------------------------------------
+# 2) APLICAR cortes (labels 1..5)
+# -------------------------------------------
+
+df['recency_5X'] = pd.cut(
     df['recencia_score'],
-    bins=quintis_recency,
+    bins=quintis_recency_edges,
     labels=[1, 2, 3, 4, 5],
     right=True,
     include_lowest=True
 )
 
-df['Y_FM_quintis'] = pd.cut(
-    df['Y_FM_quintis'],
-    bins=quintis_Y_FM,
+df['Y_FM_5X'] = pd.cut(
+    df['Y_FM_score'],
+    bins=quintis_Y_FM_edges,
     labels=[1, 2, 3, 4, 5],
     right=True,
     include_lowest=True
 )
+
+# Coagir para inteiro (cuidando de NaN)
+df['recency_5X'] = df['recency_5X'].astype('Int64')
+df['Y_FM_5X']    = df['Y_FM_5X'].astype('Int64')
+
+# -------------------------------------------
+# 3) SEGMENTAÇÃO
+# -------------------------------------------
 
 def segmentacao(row):
-    r = row['recency_quintis']
-    fm = row['Y_FM_quintis']
+    r = row['recency_5X']
+    fm = row['Y_FM_5X']
+    if pd.isna(r) or pd.isna(fm):
+        return 'Sem Classificação'
+    r, fm = int(r), int(fm)
 
-    # Campeões (recente + alto valor/freq)
+    # 1) Campeões: muito recentes e alto FM
     if r >= 4 and fm >= 4:
         return 'Campeões'
-    # Cliente Leal (recência média/alta + freq/valor médio/alto)
-    elif r >= 4 and fm >= 3:
+    # 2) Cliente Leal: recente e FM médio
+    elif r >= 4 and fm == 3:
         return 'Cliente Leal'
-    # Promissores (recente, mas freq/valor baixo)
-    elif r >= 4 and fm <= 2:
+    # 3) Promissores: muito recentes mas FM baixo
+    elif r == 5 and fm <= 2:
         return 'Promissores'
-    # Necessitam de Atenção (recência média + freq/valor baixo)
-    elif r >= 3 and fm >= 3:
+    # 4) Necessitam de Atenção: recência média e FM médio
+    elif r == 3 and fm == 3:
         return 'Necessitam de Atenção'
-    # Em risco (freq/valor alto, mas recência baixa)
-    elif r == 3 and 1 <= fm <= 2:
+    # 5) Em Risco: FM bom/alto, mas recência caiu
+    elif r <= 2 and fm >= 4:
         return 'Em Risco'
-    # Prestes a Hibernar (recência baixa + freq/valor médio)
-    elif r == 2 and 1 <= fm <= 5:
+    # 6) Prestes a Hibernar: recência baixa, FM baixo/médio
+    elif r == 2 and fm <= 3:
         return 'Prestes a Hibernar'
-    # Hibernando (recência baixa + freq/valor baixo)
-    elif r == 1 and 1 <= fm <= 5:
+    # 7) Hibernando: pior recência
+    elif r == 1:
         return 'Hibernando'
-
-
-
+    else:
+        return 'Necessitam de Atenção'
 
 df['Segmento'] = df.apply(segmentacao, axis=1)
+#print(df['Segmento'].value_counts(dropna=False))
+
 
 
 df.to_sql('tabela_RFV', con=engine, if_exists='replace', index=False)
