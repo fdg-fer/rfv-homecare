@@ -190,9 +190,6 @@ def calcular_vm(vm):
 
 Após calcular os scores de Recência (R), Frequência (F) e Valor Monetário (V) e derivar os quintis, foi definida uma função em Python para atribuir **7 segmentos estratégicos** aos clientes.  
 
-A lógica aplicada se baseia em recência (tempo desde a última compra) e na média entre frequência + valor monetário (Y_FM), permitindo identificar perfis distintos e orientar ações de negócio direcionadas.
-
-
 A lógica aplicada se baseia na literatura de RFV, adaptada ao contexto do negócio.  
 Os cortes combinam a **recência** (tempo desde a última compra) com a média de **frequência + valor monetário (Y_FM)**, de modo a capturar tanto a regularidade quanto a importância financeira do cliente.
 
