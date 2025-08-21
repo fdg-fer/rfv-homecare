@@ -1,4 +1,4 @@
-## 🎯 Por que utilizar Análise RFV?
+# 🎯 Por que utilizar Análise RFV?
 
 O objetivo desta análise é segmentar clientes de forma estratégica, permitindo que o marketing desenvolva ações mais precisas de relacionamento, retenção e fidelização.
 
@@ -6,27 +6,27 @@ Por meio dessa metodologia, é possível mapear padrões de comportamento, gerar
 
 ---
 
-### As variáveis chaves utilizadas são:
+## As variáveis chaves utilizadas são:
 
 ---
 
-#### 📆 Recência  
+### 📆 Recência  
 A variável mais determinante da RFV. Ela descreve a etapa em que o cliente se encontra, que pode ser definida em três ciclos:
 
-1. **Clientes Futuros**  
-2. **Clientes Potenciais**  
-3. **Clientes Ativos**  
+1. **Clientes Futuros →** ainda não compraram (prospectos ou leads).
+2. **Clientes Potenciais →** fizeram poucas compras iniciais, ainda em fase de teste. 
+3. **Clientes Ativos →** compram com frequência e valor consistentes, sendo a base do relacionamento. 
 
 ---
 
-#### 🛍 Frequência  
+### 🛍 Frequência  
 Define o número de vezes que o cliente realizou uma compra. 
 
 Esse indicador está altamente relacionado à **qualidade do produto ou serviço prestado**, demonstrando o quanto a empresa está presente na mente do cliente ao decidir fazer negócios novamente.  
 
 ---
 
-#### 💰 Valor  
+### 💰 Valor  
 Corresponde ao **valor total gasto** em produtos ou serviços.  
 
 Esse indicador permite identificar consumidores mais ou menos lucrativos.  
@@ -34,7 +34,7 @@ Somente a variável de Valor é capaz de estabelecer uma **hierarquia clara**, q
 
 ---
 
-#### Conclusão  
+### Conclusão  
 A metodologia **RFV** é a base para qualquer modelo preditivo de comportamento de clientes, pois combina **baixo custo de aplicação** com **alto potencial de aumento de lucratividade**.<br>  
 
 ---
@@ -134,51 +134,126 @@ CREATE OR REPLACE VIEW tabela_RFV AS (
 
 ### 3. Scores RFV (Python)
 
-A definição dos scores de 1 a 5 não foi criada de forma deliberada, cada varíável passou por uma análise exploratória e com base na distribuição. 
+A definição dos scores de 1 a 5 não foi criada de forma arbitrária.  
+Cada variável (Recência, Frequência e Valor) passou por **análise exploratória** e, a partir da distribuição estatística, foram definidos os cortes de forma **manual e contextualizada** com o negócio.
 
-**Recência (R)**: cortes dinâmicos por quantis (quanto mais recente, maior o score).
-- **Nota 5** = O primeiro quartil da  distribuição foi de aprox. 16 dias. Definição com recência **≤ 20 dias**, arredondando para cima para não penalizar clientes muito próximos do corte.
-- **Nota 4** = Definido com base na mediana que foi em torno de **33 dias**.
-- **Nota 3** = Defini com base no terceiro quartil que foi de **64 dias**.
-- **Nota 2** = Essa nota foi baseada no critério de média + desvio-padrão, que resultou em **146 dias**.
-- **Nota 1** = Tudo que for **maior** que **146 dias**.
+---
 
+**Recência (R)**  
+Cortes definidos considerando quantis e média + desvio-padrão  
+*(quanto menor a recência em dias, melhor o score).*
 
+- **Score 5** → ≤ **20 dias** (Q1 ≈ 16 dias; arredondado para cima para não penalizar clientes próximos do corte).  
+- **Score 4** → ≤ **33 dias** (mediana).  
+- **Score 3** → ≤ **64 dias** (Q3).  
+- **Score 2** → ≤ **146 dias** (média + 2 desvios-padrão).  
+- **Score 1** → > **146 dias**.
 
-**Frequência (F)**: cortes baseados na distribuição observada (clientes recorrentes = maior score).
+---
 
+**Frequência (F)**  
+Abordagem híbrida: cortes manuais ajustados pela distribuição observada  
+*(quanto mais pedidos, maior o score).*
 
+- **Score 1** → ≤ **11 pedidos** (Q1 ≈ 11).  
+- **Score 2** → até **13 pedidos** (mediana ≈ 14; arredondado para baixo para não penalizar).  
+- **Score 3** → até **16 pedidos** (entre mediana e Q3).  
+- **Score 4** → até **18 pedidos** (próximo de Q3).  
+- **Score 5** → > **18 pedidos** (clientes altamente recorrentes).
 
-**Valor Monetário (V)**: abordagem híbrida, usando média ± desvio padrão para definir faixas.
+---
+
+**Valor Monetário (V)**  
+Abordagem híbrida: média ± desvio-padrão + ajustes pelos quartis  
+*(quanto maior o valor acumulado, maior o score).*
+
+- **Score 1** → ≤ **120k** (média – 1 desvio; mais adequado que usar Q1 ≈ 145k para não ser tão punitivo).  
+- **Score 2** → até **250k** (em torno da mediana ≈ 260k).  
+- **Score 3** → até **420k** (próximo de Q3).  
+- **Score 4** → até **543k** (média + 1.5 desvios).  
+- **Score 5** → > **543k**.
+
 
 Exemplo aplicado ao Valor Monetário:
 
 ````python
 def calcular_vm(vm):
     if vm <= 120000: return 1
-    if vm <= 288000: return 2
-    if vm <= 460000: return 3
-    if vm <= 630000: return 4
+    if vm <= 250000: return 2
+    if vm <= 420000: return 3
+    if vm <= 543000: return 4
     else: return 5 
 ````
 
 
+### 4. Segmentação RFV
+
+Após calcular os scores de Recência (R), Frequência (F) e Valor Monetário (V) e derivar os quintis, foi definida uma função em Python para atribuir **7 segmentos estratégicos** aos clientes.  
+
+A lógica aplicada se baseia em recência (tempo desde a última compra) e na média entre frequência + valor monetário (Y_FM), permitindo identificar perfis distintos e orientar ações de negócio direcionadas.
 
 
-### 4. Segmentação Final
+A lógica aplicada se baseia na literatura de RFV, adaptada ao contexto do negócio.  
+Os cortes combinam a **recência** (tempo desde a última compra) com a média de **frequência + valor monetário (Y_FM)**, de modo a capturar tanto a regularidade quanto a importância financeira do cliente.
 
-A partir dos scores e quintis, os clientes foram classificados em **7 segmentos**:
+#### Lógica aplicada
+- **Campeões** → clientes muito recentes e com alta frequência/valor.  
+- **Clientes Leais** → clientes recentes com frequência/valor médios.  
+- **Promissores** → muito recentes, mas com baixo valor ou frequência.  
+- **Necessitam de Atenção** → recência e frequência/valor medianos.  
+- **Em Risco** → já tiveram bom valor/frequência, mas estão ficando inativos.  
+- **Prestes a Hibernar** → baixa recência e baixa/média frequência/valor.  
+- **Hibernando** → clientes inativos há muito tempo.  
 
-1. **Campeões** – muito recentes, alta frequência e alto valor.  
-2. **Clientes Leais** – recentes, compras regulares, valor médio/alto.  
-3. **Promissores** – recentes, mas baixo valor/frequência.  
-4. **Necessitam de Atenção** – recência média, frequência/valor medianos.  
-5. **Em Risco** – gastavam alto, mas estão há muito tempo sem comprar.  
-6. **Prestes a Hibernar** – baixa recência, baixo/médio valor.  
-7. **Hibernando** – muito tempo sem comprar, baixo valor e frequência.  
+#### Implementação em Python
+
+````python
+def segmentacao(row):
+    r = row['recency_quintis']
+    fm = row['Y_FM_5X']
+
+    # 1) Campeões: muito recentes e alto FM
+    if r >= 4 and fm >= 4:
+        return 'Campeões'
+    # 2) Cliente Leal: recente e FM médio
+    elif r >= 4 and fm == 3:
+        return 'Cliente Leal'
+    # 3) Promissores: muito recentes mas FM baixo
+    elif r == 5 and fm <= 2:
+        return 'Promissores'
+    # 4) Necessitam de Atenção: recência média e FM médio
+    elif r == 3 and fm == 3:
+        return 'Necessitam de Atenção'
+    # 5) Em Risco: FM bom/alto, mas recência caiu
+    elif r <= 2 and fm >= 4:
+        return 'Em Risco'
+    # 6) Prestes a Hibernar: recência baixa, FM baixo/médio
+    elif r == 2 and fm <= 3:
+        return 'Prestes a Hibernar'
+    # 7) Hibernando: pior recência
+    elif r == 1:
+        return 'Hibernando'
+    # fallback
+    else:
+        return 'Necessitam de Atenção'
+
+df['Segmento'] = df.apply(segmentacao, axis=1)
+````
 
 
-### 📊 Visualização – Power BI
+## 📊 Ações Recomendadas por Segmento RFV
+
+| Segmento             | Características Principais                                          | Ações de Negócio Sugeridas                                                                 |
+|----------------------|---------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
+| **Campeões**         | Compram com frequência, gastam alto valor e são recentes.           | Recompensar com programas de fidelidade, ofertas exclusivas e atendimento VIP.              |
+| **Clientes Leais**   | Boa frequência e valor médio/alto, recência positiva.               | Criar planos de assinatura ou descontos progressivos, incentivar upsell.                   |
+| **Promissores**      | Compraram recentemente, mas com baixo valor ou baixa frequência.    | Oferecer promoções de entrada, kits ou combos para aumentar ticket médio.                  |
+| **Necessitam de Atenção** | Frequência e valor medianos, recência em queda.                     | Ações de remarketing (email, WhatsApp), campanhas de “última chance” e reativação.          |
+| **Em Risco**         | Tinham alto valor/frequência, mas estão sem comprar há algum tempo. | Ofertas agressivas de retenção, contato direto da equipe comercial, condições especiais.    |
+| **Prestes a Hibernar** | Frequência baixa, valor baixo/médio, recência ruim.                   | Estratégias de baixo custo para reativação (cupons, campanhas segmentadas).                 |
+| **Hibernando**       | Inativos há muito tempo, baixo valor e baixa frequência.            | Avaliar se vale reativar ou descartar; usar campanhas automatizadas de baixo custo apenas. |
+
+## 📊 Visualização – Power BI
 #### Aba 1 – RFV (Clientes)
 
 - **KPIs (cards)**: total de clientes, ticket médio, valor acumulado, percentual de campeões
@@ -192,16 +267,6 @@ A partir dos scores e quintis, os clientes foram classificados em **7 segmentos*
 - **Filtro por segmento de cliente** (ex.: o que os Campeões mais compram)
 - **Comparativo Hospitais × Clínicas** por categoria de produto
 - **Distribuição por categoria**: descartáveis, insumos e equipamentos
-
-### 📌 Insights de Negócio por Segmento
-
-- **Campeões** → manter engajamento com benefícios exclusivos, early access a novos produtos, suporte diferenciado.
-- **Clientes Leais** → estimular upsell (kits, pacotes), programas de fidelidade.
-- **Promissores** → nutrir relacionamento (promoções de entrada, descontos progressivos).
-- **Necessitam de Atenção** → campanhas personalizadas para aumentar frequência (ex.: kits emergenciais).
-- **Em Risco** → ações de reativação (ofertas agressivas, contato direto do comercial).
-- **Prestes a Hibernar** → monitoramento e alertas para não perder clientes (descontos de   retenção).
-- **Hibernando** → avaliar custo de reativar vs. aquisição de novos clientes.
 
 
 ### 🚀 Conclusão
