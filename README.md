@@ -103,20 +103,20 @@ CROSS JOIN data_final_base df;
 
 ### 3. Scores RFV (Python)
 
-**Recência (R)**: cortes dinâmicos por quantis (quanto mais recente, maior o score).<br>
-**Frequência (F)**: cortes baseados na distribuição observada (clientes recorrentes = maior score).<br>
+**Recência (R)**: cortes dinâmicos por quantis (quanto mais recente, maior o score).
+**Frequência (F)**: cortes baseados na distribuição observada (clientes recorrentes = maior score).
 **Valor Monetário (V)**: abordagem híbrida, usando média ± desvio padrão para definir faixas.
 
 Exemplo aplicado ao Valor Monetário:
 
-```python
+````python
 def calcular_vm_dinamica(vm):
     if vm <= 120000: return 1
     if vm <= 288000: return 2
     if vm <= 460000: return 3
     if vm <= 630000: return 4
-    else: return 5
-```
+    else: return 5 
+````
 
 ### 4. Segmentação Final
 
