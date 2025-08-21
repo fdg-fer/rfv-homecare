@@ -135,47 +135,32 @@ A partir dos scores e quintis, os clientes foram classificados em **7 segmentos*
 #### Aba 1 – RFV (Clientes)
 
 - **KPIs (cards)**: total de clientes, ticket médio, valor acumulado, percentual de campeões
-
 - **Gráfico de dispersão**: recência × frequência/valor (cores por segmento)
-
 - **Tabela detalhada**: cliente, recência, frequência, valor e segmento
-
 - **Barras horizontais**: distribuição por segmento
 
 #### Aba 2 – Produtos
 
 - **Ranking de produtos mais vendidos** (volume e valor)
-
 - **Filtro por segmento de cliente** (ex.: o que os Campeões mais compram)
-
 - **Comparativo Hospitais × Clínicas** por categoria de produto
-
 - **Distribuição por categoria**: descartáveis, insumos e equipamentos
 
 ### 📌 Insights de Negócio por Segmento
 
 - **Campeões** → manter engajamento com benefícios exclusivos, early access a novos produtos, suporte diferenciado.
-
 - **Clientes Leais** → estimular upsell (kits, pacotes), programas de fidelidade.
-
 - **Promissores** → nutrir relacionamento (promoções de entrada, descontos progressivos).
-
 - **Necessitam de Atenção** → campanhas personalizadas para aumentar frequência (ex.: kits emergenciais).
-
 - **Em Risco** → ações de reativação (ofertas agressivas, contato direto do comercial).
-
-- **Prestes a Hibernar** → monitoramento e alertas para não perder clientes (descontos de retenção).
-
+- **Prestes a Hibernar** → monitoramento e alertas para não perder clientes (descontos de   retenção).
 - **Hibernando** → avaliar custo de reativar vs. aquisição de novos clientes.
 
 ### 🛠️ Tecnologias Utilizadas
 
 - **Banco de Dados**: PostgreSQL
-
 - **Linguagem**: Python (pandas, numpy, SQLAlchemy)
-
 - **Visualização**: Power BI
-
 - **Versionamento e Documentação**: GitHub
 
 ### 🚀 Conclusão
