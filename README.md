@@ -1,8 +1,22 @@
-# 🎯 Por que utilizar Análise RFV?
+# 🎯 Por que utilizar Análise RFV? 
 
-O objetivo desta análise é segmentar clientes de forma estratégica, permitindo que o marketing desenvolva ações mais precisas de relacionamento, retenção e fidelização.
+O modelo RFV (Recência, Frequência, Valor Monetário) é uma técnica consagrada em marketing e CRM para segmentação de clientes. Ele se baseia na premissa de que clientes que compraram recentemente, compram com maior frequência e gastam mais valor tendem a ser os mais valiosos para a empresa.
 
-Por meio dessa metodologia, é possível mapear padrões de comportamento, gerar insights valiosos e antecipar necessidades, tornando as estratégias mais assertivas e personalizadas. 
+Para operacionalizar o modelo, cada dimensão é classificada em **escores de 1 a 5,** onde:
+
+- **1 = desempenho fraco** (clientes menos valiosos)
+
+- **5 = desempenho excelente** (clientes mais valiosos)
+
+Essa escala não é arbitrária:
+
+Está documentada em estudos clássicos de marketing direto, como Bult e Wansbeek (1995).
+
+É aplicada em práticas modernas de CRM e análise de comportamento, como descrito em Shopify e Clevertap, recomendando dividir os clientes em quintis (20% melhores recebem score 5, 20% piores recebem score 1).
+
+O uso dessa pontuação facilita a **comparabilidade entre clientes** e permite construir **segmentos estratégicos** (ex.: Campeões, Leais, Em Risco, Hibernando etc.).
+
+Essa fundamentação garante que os scores atribuídos na análise não foram definidos de forma arbitrária, mas seguem uma **literatura consolidada** e reconhecida na área.
 
 ---
 
