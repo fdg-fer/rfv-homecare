@@ -18,6 +18,11 @@ O uso dessa pontuação facilita a **comparabilidade entre clientes** e permite 
 
 Essa fundamentação garante que os scores atribuídos na análise não foram definidos de forma arbitrária, mas seguem uma **literatura consolidada** e reconhecida na área.
 
+
+ ![Grafico_RFV](<img/grafico_rfv.png>)
+<p align="center"><em>Figura 1- Gráfico de dipersão da análise RFV, em que cada ponto representaum cliente.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total.
+</em></p>
+
 ---
 
 ## As variáveis chaves utilizadas são:
@@ -40,7 +45,7 @@ Esse indicador está altamente relacionado à **qualidade do produto ou serviço
 
 ---
 
-### 💰 Valor  
+### 💰 Valor Monetário
 Corresponde ao **valor total gasto** em produtos ou serviços.  
 
 Esse indicador permite identificar consumidores mais ou menos lucrativos.  
@@ -64,7 +69,15 @@ Este projeto aplica a análise **RFV (Recência, Frequência e Valor)** para cli
 
 A análise tem como objetivo **segmentar clientes por comportamento de compra**, permitindo identificar perfis estratégicos e definir ações de marketing e vendas mais assertivas.
 
-📌 Recorte de tempo da base: **12 meses (último ano)**
+### Recorte de tempo da base: **24 meses (últimos 2 anos)**
+
+⚖️ Regra prática (benchmark)
+
+- B2C / consumo rápido (varejo, e-commerce, delivery) → 3 a 12 meses.
+- B2B / consumo médio (SaaS, serviços mensais, clínicas pequenas) → 12 meses.
+- B2B / compras longas e caras (hospitalar, indústria, bens de capital) → 18 a 24 meses.
+
+O recorte de 24 meses foi adotado porque os ciclos de recompra de insumos e, principalmente, de equipamentos hospitalares, podem ser mais longos do que 12 meses. Assim, a análise não penaliza clientes de ciclo anual ou bienal.
 
 ---
 
@@ -150,6 +163,9 @@ CREATE OR REPLACE VIEW tabela_RFV AS (
 
 A definição dos scores de 1 a 5 não foi criada de forma arbitrária.  
 Cada variável (Recência, Frequência e Valor) passou por **análise exploratória** e, a partir da distribuição estatística, foram definidos os cortes de forma **manual e contextualizada** com o negócio.
+
+**🔃Observação**:
+Os cortes de pontuação foram definidos com base na distribuição da base atual e critérios de negócio. Recomenda-se revisão periódica (ex.: a cada semestre) para ajustar a segmentação conforme mudanças no perfil dos clientes e do mercado.
 
 ---
 
@@ -266,9 +282,9 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 
 ## 📊 Visualização – Power BI
 
-🔗[Acesse o dashboard do Power BI](https://app.powerbi.com/view?r=eyJrIjoiMDQwZjdiM2MtNDIxNy00NjY4LTg0NmYtMGZjNzc5YTYwOGFhIiwidCI6IjI4M2VmYTcwLTVjMWMtNGRjMy04YWFjLWMyYTk0M2E2YzQ1NSJ9)
+### 🔗[Acesse o dashboard do Power BI](https://app.powerbi.com/view?r=eyJrIjoiMDQwZjdiM2MtNDIxNy00NjY4LTg0NmYtMGZjNzc5YTYwOGFhIiwidCI6IjI4M2VmYTcwLTVjMWMtNGRjMy04YWFjLWMyYTk0M2E2YzQ1NSJ9)
 
-#### Aba 1 – RFV (Clientes)
+### Aba 1 – RFV (Clientes)
 
 - **KPIs (cards)**: total de clientes, ticket médio, valor acumulado, percentual de campeões
 - **Gráfico de dispersão**: recência × frequência/valor (cores por segmento)
@@ -277,12 +293,13 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 
   ![RFV](<img/dash_01.png>)
 
-#### Aba 2 – Produtos
+### Aba 2 – Produtos (RFV + Categorias)
 
+- **KPIs (cards)**: total de clientes, quantidade de produtos vendidos, valor total acumulado, ticket médio
 - **Ranking de produtos mais vendidos** (volume e valor)
-- **Filtro por segmento de cliente** (ex.: o que os Campeões mais compram)
-- **Comparativo Hospitais × Clínicas** por categoria de produto
-- **Distribuição por categoria**: descartáveis, insumos e equipamentos
+- **Comparativo % Hospitais × Clínicas** por categoria de produto
+- **Tabela detalhada**: produto, categoria, preço unitário, quantidade e valor total
+- **Filtro por tipo de cliente, categoria de produto e segmento de cliente** (ex.: o que os Campeões mais compram)
 
  ![Produtos](<img/dash_02.png>)
 
