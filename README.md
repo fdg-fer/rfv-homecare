@@ -1,6 +1,6 @@
 # 🎯 Por que utilizar Análise RFV? 
 
-O modelo RFV (Recência, Frequência, Valor Monetário) é uma técnica consagrada em marketing e CRM para segmentação de clientes. Ele se baseia na premissa de que clientes que compraram recentemente, compram com maior frequência e gastam mais valor tendem a ser os mais valiosos para a empresa.
+O modelo RFV (Recência, Frequência, Valor Monetário) é uma técnica consagrada em marketing e CRM para segmentação de clientes. Ele se baseia na premissa de que clientes que compraram **recentemente**, compram com **maior frequência** e gastam **mais valor** tendem a ser os mais valiosos para a empresa.
 
 Para operacionalizar o modelo, cada dimensão é classificada em **escores de 1 a 5,** onde:
 
@@ -265,6 +265,9 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 | **Hibernando**       | Inativos há muito tempo, baixo valor e baixa frequência.            | Avaliar se vale reativar ou descartar; usar campanhas automatizadas de baixo custo apenas. |
 
 ## 📊 Visualização – Power BI
+
+🔗[Acesse o dashboard do Power BI](https://app.powerbi.com/view?r=eyJrIjoiMDQwZjdiM2MtNDIxNy00NjY4LTg0NmYtMGZjNzc5YTYwOGFhIiwidCI6IjI4M2VmYTcwLTVjMWMtNGRjMy04YWFjLWMyYTk0M2E2YzQ1NSJ9)
+
 #### Aba 1 – RFV (Clientes)
 
 - **KPIs (cards)**: total de clientes, ticket médio, valor acumulado, percentual de campeões
@@ -272,7 +275,7 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Tabela detalhada**: cliente, recência, frequência, valor e segmento
 - **Barras horizontais**: distribuição por segmento
 
- ![Tabela_rfv](<img/dash_01.png>)
+  ![RFV](<img/dash_01.png>)
 
 #### Aba 2 – Produtos
 
@@ -281,7 +284,7 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Comparativo Hospitais × Clínicas** por categoria de produto
 - **Distribuição por categoria**: descartáveis, insumos e equipamentos
 
- ![Tabela_rfv](<img/dash_02.png>)
+ ![Produtos](<img/dash_02.png>)
 
 ### 🚀 Conclusão
 
