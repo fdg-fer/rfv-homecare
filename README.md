@@ -96,16 +96,6 @@ O recorte de 24 meses foi adotado porque os ciclos de recompra de insumos e, pri
 
 ## ⚙️ Pipeline Analítico
 
-```mermaid
-graph LR
-A[CSV de Pedidos] --> B[(PostgreSQL)]
-B --> C[Views SQL - RFV Base]
-C --> D[Python - Scores e Segmentos]
-D --> E[Power BI - Dashboards e Insights]
-```
-
----
-
 ### 1. Estrutura da Base
 A base fictícia contém **1.000 registros de venda** e **67 clientes**.  
 Cada registro inclui:
