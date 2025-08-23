@@ -164,6 +164,8 @@ CREATE OR REPLACE VIEW tabela_RFV AS (
 )
 ````
 
+---
+
 ### 3. Scores RFV (Python)
 
 A definição dos scores de 1 a 5 não foi criada de forma arbitrária.  
@@ -172,7 +174,7 @@ Cada variável (Recência, Frequência e Valor) passou por **análise explorató
 **🔃Observação**:
 Os cortes de pontuação foram definidos com base na distribuição da base atual e critérios de negócio. Recomenda-se revisão periódica (ex.: a cada semestre) para ajustar a segmentação conforme mudanças no perfil dos clientes e do mercado.
 
----
+
 
 **Recência (R)**  
 Abordagem híbrida: média ± desvio-padrão + ajustes pelos quartis  
@@ -184,7 +186,7 @@ Abordagem híbrida: média ± desvio-padrão + ajustes pelos quartis
 - **Score 2** → ≤ **146 dias** (média + 2 desvios-padrão).  
 - **Score 1** → > **146 dias**.
 
----
+
 
 **Frequência (F)**  
 Abordagem híbrida: cortes manuais ajustados pela distribuição observada  
@@ -196,7 +198,7 @@ Abordagem híbrida: cortes manuais ajustados pela distribuição observada
 - **Score 4** → até **18 pedidos** (próximo de Q3).  
 - **Score 5** → > **18 pedidos** (clientes altamente recorrentes).
 
----
+
 
 **Valor Monetário (V)**  
 Abordagem híbrida: média ± desvio-padrão + ajustes pelos quartis  
@@ -219,7 +221,7 @@ def calcular_vm(vm):
     if vm <= 543000: return 4
     else: return 5 
 ````
-
+---
 
 ### 4. Segmentação RFV
 
@@ -271,7 +273,7 @@ def segmentacao(row):
 
 df['Segmento'] = df.apply(segmentacao, axis=1)
 ````
-
+---
 
 ## 📊 Ações Recomendadas por Segmento RFV
 
@@ -284,6 +286,8 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 | **Em Risco**         | Tinham alto valor/frequência, mas estão sem comprar há algum tempo. | Ofertas agressivas de retenção, contato direto da equipe comercial, condições especiais.    |
 | **Prestes a Hibernar** | Frequência baixa, valor baixo/médio, recência ruim.                   | Estratégias de baixo custo para reativação (cupons, campanhas segmentadas).                 |
 | **Hibernando**       | Inativos há muito tempo, baixo valor e baixa frequência.            | Avaliar se vale reativar ou descartar; usar campanhas automatizadas de baixo custo apenas. |
+
+---
 
 ## 📊 Visualização – Power BI
 
@@ -316,6 +320,7 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
   <p><em>Figura 5 - Painel Visão de Produtos.</em></p>
 </div>
 
+---
 
 ## 🔎 Insights
 
@@ -338,7 +343,7 @@ Um destaque relevante foram os **clientes em risco**:
   <img src="img/em_risco_02.png" alt="Painel Visão de Produtos"/>
   <p><em>Figura 7 - Painel Visão de Produtos, filtrado por segmento em Risco.</em></p>
 
-
+---
 
 ## 🚀 Conclusão
 
