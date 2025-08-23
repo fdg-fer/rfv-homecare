@@ -19,9 +19,9 @@ O uso dessa pontuação facilita a **comparabilidade entre clientes** e permite 
 Essa fundamentação garante que os scores atribuídos na análise não foram definidos de forma arbitrária, mas seguem uma **literatura consolidada** e reconhecida na área.
 
 
- <div style="text-align: center;">
+ <p align="center;">
   <img src="img/grafico_rfv.png" alt="Gráfico de Dispersão RFV" width="600"/>
-  <p><em>Figura 1- Gráfico de dipersão da análise RFV, em que cada ponto um grupo de clientes.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total..</em></p>
+  <p><em>Figura 1 - Gráfico de dipersão da análise RFV, em que cada ponto um grupo de clientes.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total..</em></p>
 </div>
 
 ---
@@ -97,7 +97,10 @@ O recorte de 24 meses foi adotado porque os ciclos de recompra de insumos e, pri
 A base fictícia contém **1.000 registros de venda** e **67 clientes**.  
 Cada registro inclui:
 
- ![Tabela_Base](<img/tabela_01.png>)
+  <div style="text-align: center;">
+  <img src="img/tabela_01.png" alt="Tabela_Base" width="600"/>
+  <p><em>Figura 2 - Tabela de vendas no PostgresSQL</em></p>
+</div>
 
 ---
 
@@ -109,7 +112,12 @@ No **PostgreSQL**, foram geradas as variáveis principais:
 - `valor_monetario`: soma total gasta pelo cliente  
 - `ticket_medio`: valor médio gasto por pedido  
 
- ![Tabela_rfv](<img/tabela_02.png>)
+
+   <div style="text-align: center;">
+  <img src="img/tabela_02.png" alt="Tabela RFV" width="600"/>
+  <p><em>Figura 3 - Tabela RFV no PostgresSQL</em></p>
+</div>
+
 
 Exemplo do SQL:
 ```sql
@@ -292,7 +300,11 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Tabela detalhada**: cliente, recência, frequência, valor e segmento
 - **Barras horizontais**: distribuição por segmento
 
-![RFV](<img/dash_01.png>)
+
+  <div style="text-align: center;">
+  <img src="img/dash_01.png" alt="Painel RFV" width="600"/>
+  <p><em>Figura 4 - Painel RFV.</em></p>
+</div>
 
 ### Aba 2 – Produtos (RFV + Categorias)
 
@@ -302,33 +314,35 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Tabela detalhada**: produto, categoria, preço unitário, quantidade e valor total
 - **Filtro por tipo de cliente, categoria de produto e segmento de cliente** (ex.: o que os Campeões mais compram)
 
-![Produtos](<img/dash_02.png>)
+
+  <div style="text-align: center;">
+  <img src="img/dash_02.png" alt="Painel Produtos" width="600"/>
+  <p><em>Figura 5 - Painel Visão de Produtos.</em></p>
+</div>
 
 
 ## 🔎 Insights
 
 A análise RFV permitiu identificar diferentes perfis de clientes e suas necessidades estratégicas.
-Um destaque relevante foram os clientes em risco:
+Um destaque relevante foram os **clientes em risco**:
 
-- Representam apenas 4 clientes, mas concentram ≈ R$ 2,2 milhões em compras.
-- Isso corresponde a ~11% do valor monetário total da base.
-- Em termos de quantidade, o Ventilador Pulmonar sozinho aparece com 119 unidades vendidas, consolidando-se como o produto mais crítico desse grupo.
+- **Representam apenas 4 clientes**, mas concentram **≈ R$ 2,2 milhões em compras**.
+- Isso corresponde a **~11% do valor monetário total da base**.
+- Em termos de quantidade, o **Ventilador Pulmonar** sozinho aparece com **119 unidades vendidas**, consolidando-se como o produto mais crítico desse grupo.
 
-<br>
+👉 **Insight estratégico**: embora pequenos em número, esses clientes têm grande impacto financeiro. Se não forem reativados, a perda pode comprometer significativamente o faturamento. Ações de retenção personalizadas, como ofertas exclusivas, atendimento consultivo e condições comerciais diferenciadas, são fundamentais para evitar churn desse grupo
+
+
  <div style="text-align: center;">
   <img src="img/em_risco_01.png" alt="Painel RFV por Cliente" width="600"/>
-  <p><em>Figura 1- Painel RFV por Cliente, filtrado por segmento em Risco</em></p>
+  <p><em>Figura 6 - Painel RFV por Cliente, filtrado por segmento em Risco</em></p>
 </div>
-<br>
 
  <div style="text-align: center;">
   <img src="img/em_risco_02.png" alt="Painel Visão de Produtos" width="600"/>
-  <p><em>Figura 1- Painel Visão de Produtos, filtrado por segmento em Risco</em></p>
+  <p><em>Figura 7 - Painel Visão de Produtos, filtrado por segmento em Risco</em></p>
 </div>
 
-<br>
-
-👉 **Insight estratégico**: embora pequenos em número, esses clientes têm grande impacto financeiro. Se não forem reativados, a perda pode comprometer significativamente o faturamento. Ações de retenção personalizadas, como ofertas exclusivas, atendimento consultivo e condições comerciais diferenciadas, são fundamentais para evitar churn desse grupo.
 
 ## 🚀 Conclusão
 
