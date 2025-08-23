@@ -356,28 +356,20 @@ Além disso, a segunda aba focada em **produtos** mostrou **padrões de consumo*
 ---
 
 ## Estrutura de Pastas do Projeto
-````
-📦 rfv_produtos_hospitalares
+```
+📦 rfv_clientes_b2b_hospitalar
 │
-├── 📁src/                    # Scripts principais
-│  ├─ tabela_RFV.sql           # SQL: monta RFV (agg por cliente)
-│  ├─ segmentacao_RFV.py       # Python: scores + quintis + segmentação
-│  ├─ export_postgres.py       # Python: carga do CSV -> PostgreSQL
-│  └─ eda_rfv.ipynb            # EDA: describe, quantis, boxplots.
+├── 📁src/                    			# Scripts principais
+│  ├─ tabela_RFV.sql           			# SQL: monta RFV (agg por cliente)
+│  ├─ segmentacao_RFV.py       			# Python: scores + quintis + segmentação
+│  ├─ export_postgres_CSV.py       		# Python: carga do CSV -> PostgreSQL
+│  └─ analise_exploratoria_rfv.ipynb    # EDA: describe, quantis, boxplots.
 │
-├── 📁data/                    # (Opcional) Dados fictícios utilizados no projeto
-│   └── base_vendas.csv     
+├── 📁img/                     	# Imagens para documentação e README
 │
-├── 📁img/                     # Imagens para documentação e README
-│
-├── 📁docs/                    # Documentos de apoio
-│   └── dicionario_dados.csv
+├── 📁dic/                    	# Documentos de apoio
+│   └── dicionario_dados.xlsx
 │
 ├── .gitignore              # Arquivos ignorados pelo Git
 ├── README.md               # Documentação principal do projeto
-└── requirements.txt        # Dependências (caso queira registrar libs Python)
-
-```
-
-
-
+└── requirements.txt        # Libs Python
