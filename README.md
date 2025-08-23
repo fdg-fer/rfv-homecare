@@ -20,7 +20,7 @@ Essa fundamentação garante que os scores atribuídos na análise não foram de
 
 
 ![Gráfico de Dispersão RFV](img/grafico_rfv.png)
-<p><em>Figura 1 - Gráfico de dipersão da análise RFV, em que cada ponto um grupo de clientes.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total.</em></p>
+<p><em>Figura 1 - Gráfico de dipersão da análise RFV, em que cada ponto representa um grupo de clientes.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total.</em></p>
 
 ---
 
