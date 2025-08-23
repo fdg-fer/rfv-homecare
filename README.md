@@ -19,9 +19,10 @@ O uso dessa pontuação facilita a **comparabilidade entre clientes** e permite 
 Essa fundamentação garante que os scores atribuídos na análise não foram definidos de forma arbitrária, mas seguem uma **literatura consolidada** e reconhecida na área.
 
 
- ![Grafico_RFV](<img/grafico_rfv.png>)
-<p align="center"><em>Figura 1- Gráfico de dipersão da análise RFV, em que cada ponto representaum cliente.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total.
-</em></p>
+ <div style="text-align: center;">
+  <img src="img/grafico_rfv.png" alt="Gráfico de Dispersão RFV" width="600"/>
+  <p><em>Figura 1- Gráfico de dipersão da análise RFV, em que cada ponto um grupo de clientes.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total..</em></p>
+</div>
 
 ---
 
@@ -291,7 +292,7 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Tabela detalhada**: cliente, recência, frequência, valor e segmento
 - **Barras horizontais**: distribuição por segmento
 
-  ![RFV](<img/dash_01.png>)
+![RFV](<img/dash_01.png>)
 
 ### Aba 2 – Produtos (RFV + Categorias)
 
@@ -301,9 +302,35 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Tabela detalhada**: produto, categoria, preço unitário, quantidade e valor total
 - **Filtro por tipo de cliente, categoria de produto e segmento de cliente** (ex.: o que os Campeões mais compram)
 
- ![Produtos](<img/dash_02.png>)
+![Produtos](<img/dash_02.png>)
 
-### 🚀 Conclusão
+
+## 🔎 Insights
+
+A análise RFV permitiu identificar diferentes perfis de clientes e suas necessidades estratégicas.
+Um destaque relevante foram os clientes em risco:
+
+- Representam apenas 4 clientes, mas concentram ≈ R$ 2,2 milhões em compras.
+- Isso corresponde a ~11% do valor monetário total da base.
+- Em termos de quantidade, o Ventilador Pulmonar sozinho aparece com 119 unidades vendidas, consolidando-se como o produto mais crítico desse grupo.
+
+<br>
+ <div style="text-align: center;">
+  <img src="img/em_risco_01.png" alt="Painel RFV por Cliente" width="600"/>
+  <p><em>Figura 1- Painel RFV por Cliente, filtrado por segmento em Risco</em></p>
+</div>
+<br>
+
+ <div style="text-align: center;">
+  <img src="img/em_risco_02.png" alt="Painel Visão de Produtos" width="600"/>
+  <p><em>Figura 1- Painel Visão de Produtos, filtrado por segmento em Risco</em></p>
+</div>
+
+<br>
+
+👉 **Insight estratégico**: embora pequenos em número, esses clientes têm grande impacto financeiro. Se não forem reativados, a perda pode comprometer significativamente o faturamento. Ações de retenção personalizadas, como ofertas exclusivas, atendimento consultivo e condições comerciais diferenciadas, são fundamentais para evitar churn desse grupo.
+
+## 🚀 Conclusão
 
 A análise RFV permitiu **segmentar os clientes e identificar perfis estratégicos**, trazendo clareza sobre quem são os campeões, quem está em risco e quem pode ser perdido.
 Além disso, a segunda aba focada em **produtos** mostrou **padrões de consumo** relevantes para apoiar **estratégias comerciais**.
