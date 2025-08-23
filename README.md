@@ -97,7 +97,7 @@ Cada registro inclui:
 
 
 ![Tabela_Base](img/tabela_01.png)
-<p><em>Figura 2 - Tabela de vendas no PostgresSQL</em></p>
+<p><em>Figura 2 - Tabela de vendas no PostgresSQL.</em></p>
 
 
 ---
@@ -112,7 +112,7 @@ No **PostgreSQL**, foram geradas as variáveis principais:
 
 
 ![Tabela_Base](img/tabela_02.png)
-<p><em>Figura 3 - Tabela RFV no PostgresSQL</em></p>
+<p><em>Figura 3 - Tabela RFV no PostgresSQL.</em></p>
 
 
 Exemplo do SQL:
@@ -175,7 +175,7 @@ Os cortes de pontuação foram definidos com base na distribuição da base atua
 ---
 
 **Recência (R)**  
-Cortes definidos considerando quantis e média + desvio-padrão  
+Abordagem híbrida: média ± desvio-padrão + ajustes pelos quartis  
 *(quanto menor a recência em dias, melhor o score).*
 
 - **Score 5** → ≤ **20 dias** (Q1 ≈ 16 dias; arredondado para cima para não penalizar clientes próximos do corte).  
@@ -331,12 +331,12 @@ Um destaque relevante foram os **clientes em risco**:
 
 
   <img src="img/em_risco_01.png" alt="Painel RFV por Cliente"/>
-  <p><em>Figura 6 - Painel RFV por Cliente, filtrado por segmento em Risco</em></p>
+  <p><em>Figura 6 - Painel RFV por Cliente, filtrado por segmento em Risco.</em></p>
 
 
 
   <img src="img/em_risco_02.png" alt="Painel Visão de Produtos"/>
-  <p><em>Figura 7 - Painel Visão de Produtos, filtrado por segmento em Risco</em></p>
+  <p><em>Figura 7 - Painel Visão de Produtos, filtrado por segmento em Risco.</em></p>
 
 
 
