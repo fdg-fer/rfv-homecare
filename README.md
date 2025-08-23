@@ -19,10 +19,8 @@ O uso dessa pontuação facilita a **comparabilidade entre clientes** e permite 
 Essa fundamentação garante que os scores atribuídos na análise não foram definidos de forma arbitrária, mas seguem uma **literatura consolidada** e reconhecida na área.
 
 
-
-  <img src="img/grafico_rfv.png" alt="Gráfico de Dispersão RFV"/>
-  <p><em>Figura 1 - Gráfico de dipersão da análise RFV, em que cada ponto um grupo de clientes.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total..</em></p>
-</div>
+![Gráfico de Dispersão RFV](img/grafico_rfv.png)
+<p><em>Figura 1 - Gráfico de dipersão da análise RFV, em que cada ponto um grupo de clientes.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total.</em></p>
 
 ---
 
@@ -98,8 +96,8 @@ A base fictícia contém **1.000 registros de venda** e **67 clientes**.
 Cada registro inclui:
 
 
-  <img src="img/tabela_01.png" alt="Tabela_Base" width="600"/>
-  <p><em>Figura 2 - Tabela de vendas no PostgresSQL</em></p>
+![Tabela_Base](img/tabela_01.png)
+<p><em>Figura 2 - Tabela de vendas no PostgresSQL</em></p>
 
 
 ---
@@ -113,8 +111,8 @@ No **PostgreSQL**, foram geradas as variáveis principais:
 - `ticket_medio`: valor médio gasto por pedido  
 
 
-  <img src="img/tabela_02.png" alt="Tabela RFV" width="600"/>
-  <p><em>Figura 3 - Tabela RFV no PostgresSQL</em></p>
+![Tabela_Base](img/tabela_02.png)
+<p><em>Figura 3 - Tabela RFV no PostgresSQL</em></p>
 
 
 Exemplo do SQL:
