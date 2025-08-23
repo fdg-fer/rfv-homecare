@@ -3,6 +3,8 @@ import pandas as pd
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Carregar variáveis do .env
 load_dotenv()
@@ -20,10 +22,6 @@ engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{
 # Consulta com pandas
 df = pd.read_sql(f'SELECT * FROM tabela_RFV', con=engine)
 
-
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy
 
  
 recencia = df['recencia_dias']

@@ -357,19 +357,20 @@ Além disso, a segunda aba focada em **produtos** mostrou **padrões de consumo*
 
 ## Estrutura de Pastas do Projeto
 ````
-📦 rfv_home_care/
+📦 rfv_produtos_hospitalares
 │
 ├── 📁src/                    # Scripts principais
-│   ├── tabela_RFV.sql      # Query para gerar tabela RFV inicial (SQL)
-│   ├── segmentacao_RFV.py  # Script Python para cálculo dos scores e segmentação
-│   └── dim_calendario.sql  # Script para criação da dimensão calendário
+│  ├─ tabela_RFV.sql           # SQL: monta RFV (agg por cliente)
+│  ├─ segmentacao_RFV.py       # Python: scores + quintis + segmentação
+│  ├─ export_postgres.py       # Python: carga do CSV -> PostgreSQL
+│  └─ eda_rfv.ipynb            # EDA: describe, quantis, boxplots.
 │
-├── 📁data/                   # (Opcional) Dados fictícios utilizados no projeto
+├── 📁data/                    # (Opcional) Dados fictícios utilizados no projeto
 │   └── base_vendas.csv     
 │
-├── 📁img/                    # Imagens para documentação e README
+├── 📁img/                     # Imagens para documentação e README
 │
-├── 📁docs/                   # Documentos de apoio
+├── 📁docs/                    # Documentos de apoio
 │   └── dicionario_dados.csv
 │
 ├── .gitignore              # Arquivos ignorados pelo Git
