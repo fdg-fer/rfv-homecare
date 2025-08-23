@@ -35,14 +35,12 @@ A variável mais determinante da RFV. Ela descreve a etapa em que o cliente se e
 2. **Clientes Potenciais →** fizeram poucas compras iniciais, ainda em fase de teste. 
 3. **Clientes Ativos →** compram com frequência e valor consistentes, sendo a base do relacionamento. 
 
----
 
 ### 🛍 Frequência  
 Define o número de vezes que o cliente realizou uma compra. 
 
 Esse indicador está altamente relacionado à **qualidade do produto ou serviço prestado**, demonstrando o quanto a empresa está presente na mente do cliente ao decidir fazer negócios novamente.  
 
----
 
 ### 💰 Valor Monetário
 Corresponde ao **valor total gasto** em produtos ou serviços.  
@@ -50,7 +48,6 @@ Corresponde ao **valor total gasto** em produtos ou serviços.
 Esse indicador permite identificar consumidores mais ou menos lucrativos.  
 Somente a variável de Valor é capaz de estabelecer uma **hierarquia clara**, quando analisada em conjunto com Recência e Frequência.  
 
----
 
 ### Conclusão  
 A metodologia **RFV** é a base para qualquer modelo preditivo de comportamento de clientes, pois combina **baixo custo de aplicação** com **alto potencial de aumento de lucratividade**.<br>  
@@ -301,10 +298,8 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Barras horizontais**: distribuição por segmento
 
 
-  <div style="text-align: center;">
-  <img src="img/dash_01.png" alt="Painel RFV" width="600"/>
-  <p><em>Figura 4 - Painel RFV.</em></p>
-</div>
+<img src="img/dash_01.png" alt="Painel RFV" width="600"/>
+<p><em>Figura 4 - Painel RFV.</em></p>
 
 ### Aba 2 – Produtos (RFV + Categorias)
 
@@ -314,11 +309,9 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Tabela detalhada**: produto, categoria, preço unitário, quantidade e valor total
 - **Filtro por tipo de cliente, categoria de produto e segmento de cliente** (ex.: o que os Campeões mais compram)
 
+<img src="img/dash_02.png" alt="Painel Produtos" width="600"/>
+<p><em>Figura 5 - Painel Visão de Produtos.</em></p>
 
-  <div style="text-align: center;">
-  <img src="img/dash_02.png" alt="Painel Produtos" width="600"/>
-  <p><em>Figura 5 - Painel Visão de Produtos.</em></p>
-</div>
 
 ---
 
@@ -338,6 +331,7 @@ Um destaque relevante foram os **clientes em risco**:
   <img src="img/em_risco_01.png" alt="Painel RFV por Cliente"/>
   <p><em>Figura 6 - Painel RFV por Cliente, filtrado por segmento em Risco.</em></p>
 
+<br>
 
 
   <img src="img/em_risco_02.png" alt="Painel Visão de Produtos"/>
