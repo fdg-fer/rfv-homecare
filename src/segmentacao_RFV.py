@@ -103,7 +103,7 @@ else:
 
 #---------------------------------------------------------------------------------------------------------------#
 
-df['recency_5X'] = df['recencia_score']
+#df['recency_5X'] = df['recencia_score']
 
 
 df['Y_FM_5X'] = pd.cut(
@@ -115,17 +115,14 @@ df['Y_FM_5X'] = pd.cut(
 )
 
 # Coagir para inteiro (cuidando de NaN)
-df['recency_5X'] = df['recency_5X'].astype('Int64')
+df['recencia_score'] = df['recencia_score'].astype('Int64')
 df['Y_FM_5X']    = df['Y_FM_5X'].astype('Int64')
 
 #---------------------------------------------------------------------------------------------------------------#
 
 def segmentacao(row):
-    r = row['recency_5X']
+    r = row['recencia_score']
     fm = row['Y_FM_5X']
-    if pd.isna(r) or pd.isna(fm):
-        return 'Sem Classificação'
-    r, fm = int(r), int(fm)
 
     # 1) Campeões: muito recentes e alto FM
     if r >= 4 and fm >= 4:

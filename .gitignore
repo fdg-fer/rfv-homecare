@@ -7,7 +7,6 @@ __pycache__/
 
 # Ignorar pastas de dados grandes (opcional)
 *.csv
-*.xlsx
 *.pdf
 *.pbix
 *.pptx

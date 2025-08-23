@@ -59,8 +59,8 @@ A metodologia **RFV** é a base para qualquer modelo preditivo de comportamento 
 ---
 # 📊 Análise RFV – Indústria de Produtos Hospitalares
 
-## 📌 Contexto do Projeto
-Este projeto aplica a análise **RFV (Recência, Frequência e Valor)** para clientes de uma **indústria fictícia de produtos hospitalares**, que vende insumos, descartáveis e equipamentos médicos para **clínicas pequenas e hospitais grandes**.
+## 📌 Contexto e Objetivo do Projeto
+Este projeto aplica a análise **RFV (Recência, Frequência e Valor)** para clientes de uma **indústria fictícia de produtos hospitalares**, que vende insumos, descartáveis e equipamentos médicos para **clínicas e hospitais**.
 
 A análise tem como objetivo **segmentar clientes por comportamento de compra**, permitindo identificar perfis estratégicos e definir ações de marketing e vendas mais assertivas.
 
@@ -78,10 +78,10 @@ O recorte de 24 meses foi adotado porque os ciclos de recompra de insumos e, pri
 
 ### 🛠️ Tecnologias Utilizadas
 
-- **Banco de Dados**: PostgreSQL
-- **Linguagem**: Python (pandas, numpy, SQLAlchemy)
-- **Visualização**: Power BI
-- **Versionamento e Documentação**: GitHub
+- **PostgreSQL**: Banco de Dados
+- **Linguagem**: Python (pandas, numpy, SQLAlchemy, OS, Dotenv), SQL e DAX
+- **Power BI**: Visualização final dos dados
+- **GitHub** :Versionamento e Documentação: 
 
 ---
 
@@ -98,17 +98,18 @@ Cada registro inclui:
 
 ---
 
-### 2. Construção da Tabela RFV
+### 2. Construção da Tabela RFV (SQL)
+
 No **PostgreSQL**, foram geradas as variáveis principais:
 
-- `recencia`: dias desde a última compra  
-- `frequencia`: número total de pedidos  
-- `valor_monetario`: soma total gasta pelo cliente  
-- `ticket_medio`: valor médio gasto por pedido  
+- `recencia_dias` → **recencia**: dias desde a última compra  
+- `qtd_pedidos` → **frequencia**: número total de pedidos  
+- `valor_monetario`→ **valor monetario**: soma total gasta pelo cliente  
+- `ticket_medio`: valor médio de compra (apenas para análise secundária)  
 
 
 ![Tabela_Base](img/tabela_02.png)
-<p><em>Figura 3 - Tabela RFV no PostgresSQL.</em></p>
+<p><em>Figura 3 - Tabela RFV inicial no PostgresSQL.</em></p>
 
 
 Exemplo do SQL:
@@ -158,7 +159,7 @@ CREATE OR REPLACE VIEW tabela_RFV AS (
 	LEFT JOIN data_maxima AS dm ON rfv.nome_cliente = dm.nome_cliente
 	CROSS JOIN data_final_base AS df
 )
-````
+```
 
 ---
 
@@ -183,7 +184,6 @@ Abordagem híbrida: média ± desvio-padrão + ajustes pelos quartis
 - **Score 1** → > **146 dias**.
 
 
-
 **Frequência (F)**  
 Abordagem híbrida: cortes manuais ajustados pela distribuição observada  
 *(quanto mais pedidos, maior o score).*
@@ -195,9 +195,8 @@ Abordagem híbrida: cortes manuais ajustados pela distribuição observada
 - **Score 5** → > **18 pedidos** (clientes altamente recorrentes).
 
 
-
 **Valor Monetário (V)**  
-Abordagem híbrida: média ± desvio-padrão + ajustes pelos quartis  
+Abordagem híbrida: média + desvio-padrão + ajustes pelos quartis  
 *(quanto maior o valor acumulado, maior o score).*
 
 - **Score 1** → ≤ **120k** (média – 1 desvio; mais adequado que usar Q1 ≈ 145k para não ser tão punitivo).  
@@ -217,6 +216,7 @@ def calcular_vm(vm):
     if vm <= 543000: return 4
     else: return 5 
 ````
+
 ---
 
 ### 4. Segmentação RFV
@@ -239,7 +239,7 @@ Os cortes combinam a **recência** (tempo desde a última compra) com a média d
 
 ````python
 def segmentacao(row):
-    r = row['recency_quintis']
+    r = row['recencia_score']
     fm = row['Y_FM_5X']
 
     # 1) Campeões: muito recentes e alto FM
@@ -263,12 +263,16 @@ def segmentacao(row):
     # 7) Hibernando: pior recência
     elif r == 1:
         return 'Hibernando'
-    # fallback
     else:
         return 'Necessitam de Atenção'
 
 df['Segmento'] = df.apply(segmentacao, axis=1)
 ````
+
+#### ✅ Tabela RFV com a segmentação concluída
+![Tabela_RFV_final](img/tabela_03.png)
+<p><em>Figura 4 - Tabela RFV final no PostgreSQL.</em></p>
+
 ---
 
 ## 📊 Ações Recomendadas por Segmento RFV
@@ -287,9 +291,10 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 
 ## 📊 Visualização – Power BI
 
-### 🔗[Acesse o dashboard do Power BI](https://app.powerbi.com/view?r=eyJrIjoiMDQwZjdiM2MtNDIxNy00NjY4LTg0NmYtMGZjNzc5YTYwOGFhIiwidCI6IjI4M2VmYTcwLTVjMWMtNGRjMy04YWFjLWMyYTk0M2E2YzQ1NSJ9)
+Link do dashboard foi publicado, permitindo exploração dinâmica dos dados:
+🔗[Acesse o dashboard do Power BI](https://app.powerbi.com/view?r=eyJrIjoiMDQwZjdiM2MtNDIxNy00NjY4LTg0NmYtMGZjNzc5YTYwOGFhIiwidCI6IjI4M2VmYTcwLTVjMWMtNGRjMy04YWFjLWMyYTk0M2E2YzQ1NSJ9)
 
-### Aba 1 – RFV (Clientes)
+#### Aba 1 – RFV (Clientes)
 
 - **KPIs (cards)**: total de clientes, ticket médio, valor acumulado, percentual de campeões
 - **Gráfico de dispersão**: recência × frequência/valor (cores por segmento)
@@ -298,9 +303,9 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 
 
 <img src="img/dash_01.png" alt="Painel RFV" width="600"/>
-<p><em>Figura 4 - Painel RFV.</em></p>
+<p><em>Figura 5 - Painel RFV.</em></p>
 
-### Aba 2 – Produtos (RFV + Categorias)
+#### Aba 2 – Produtos (RFV + Categorias)
 
 - **KPIs (cards)**: total de clientes, quantidade de produtos vendidos, valor total acumulado, ticket médio
 - **Ranking de produtos mais vendidos** (volume e valor)
@@ -309,7 +314,7 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 - **Filtro por tipo de cliente, categoria de produto e segmento de cliente** (ex.: o que os Campeões mais compram)
 
 <img src="img/dash_02.png" alt="Painel Produtos" width="600"/>
-<p><em>Figura 5 - Painel Visão de Produtos.</em></p>
+<p><em>Figura 6 - Painel Visão de Produtos.</em></p>
 
 
 ---
@@ -328,19 +333,27 @@ Um destaque relevante foram os **clientes em risco**:
 
 
   <img src="img/em_risco_01.png" alt="Painel RFV por Cliente"/>
-  <p><em>Figura 6 - Painel RFV por Cliente, filtrado por segmento em Risco.</em></p>
+  <p><em>Figura 7- Painel RFV por Cliente, filtrado por segmento em Risco.</em></p>
 
 <br>
 
 
   <img src="img/em_risco_02.png" alt="Painel Visão de Produtos"/>
-  <p><em>Figura 7 - Painel Visão de Produtos, filtrado por segmento em Risco.</em></p>
+  <p><em>Figura 8 - Painel Visão de Produtos, filtrado por segmento em Risco.</em></p>
 
+---
+
+#### Dicionário de Dados
+
+- [Baixar Dicionário de Dados](https://github.com/fdg-fer/bpc-pipeline-databricks/blob/main/dic/silver.xlsx)
 ---
 
 ## 🚀 Conclusão
 
 A análise RFV permitiu **segmentar os clientes e identificar perfis estratégicos**, trazendo clareza sobre quem são os campeões, quem está em risco e quem pode ser perdido.
 Além disso, a segunda aba focada em **produtos** mostrou **padrões de consumo** relevantes para apoiar **estratégias comerciais**.
+
+---
+
 
 
