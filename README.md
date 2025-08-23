@@ -57,7 +57,7 @@ A metodologia **RFV** é a base para qualquer modelo preditivo de comportamento 
 <br>
 
 ---
-# 📊 Análise RFV – Indústria de Produtos Hospitalares
+# 📊 Análise RFV – Clientes B2B Hospitalar
 
 ## 📌 Contexto e Objetivo do Projeto
 Este projeto aplica a análise **RFV (Recência, Frequência e Valor)** para clientes de uma **indústria fictícia de produtos hospitalares**, que vende insumos, descartáveis e equipamentos médicos para **clínicas e hospitais**.
@@ -78,14 +78,24 @@ O recorte de 24 meses foi adotado porque os ciclos de recompra de insumos e, pri
 
 ### 🛠️ Tecnologias Utilizadas
 
-- **PostgreSQL**: Banco de Dados
-- **Linguagem**: Python (pandas, numpy, SQLAlchemy, OS, Dotenv), SQL e DAX
-- **Power BI**: Visualização final dos dados
-- **GitHub** :Versionamento e Documentação: 
+- **PostgreSQL** →armazenamento e criação da visão RFV
+- **Python** → (pandas, numpy, SQLAlchemy) cálculos e segmentação
+- **Power BI** → dashboards
+- **SQL & DAX** → modelagem e métricas
+- **GitHub** →Versionamento e Documentação
 
 ---
 
 ## ⚙️ Pipeline Analítico
+
+
+```mermaid
+graph LR
+A[CSV de Pedidos] --> B[(PostgreSQL)]
+B --> C[Views SQL - RFV Base]
+C --> D[Python - Scores e Segmentos]
+D --> E[Power BI - Dashboards e Insights]
+```
 
 ### 1. Estrutura da Base
 A base fictícia contém **1.000 registros de venda** e **67 clientes**.  
@@ -98,8 +108,7 @@ Cada registro inclui:
 
 ---
 
-### 2. Construção da Tabela RFV (SQL)
-
+### 2. Construção da Tabela(View) RFV
 No **PostgreSQL**, foram geradas as variáveis principais:
 
 - `recencia_dias` → **recencia**: dias desde a última compra  
@@ -109,7 +118,7 @@ No **PostgreSQL**, foram geradas as variáveis principais:
 
 
 ![Tabela_Base](img/tabela_02.png)
-<p><em>Figura 3 - Tabela RFV inicial no PostgresSQL.</em></p>
+<p><em>Figura 3 - View RFV inicial no PostgresSQL.</em></p>
 
 
 Exemplo do SQL:
@@ -291,7 +300,8 @@ df['Segmento'] = df.apply(segmentacao, axis=1)
 
 ## 📊 Visualização – Power BI
 
-Link do dashboard foi publicado, permitindo exploração dinâmica dos dados:
+Link do dashboard que foi publicado, permitindo exploração dinâmica dos dados:
+
 🔗[Acesse o dashboard do Power BI](https://app.powerbi.com/view?r=eyJrIjoiMDQwZjdiM2MtNDIxNy00NjY4LTg0NmYtMGZjNzc5YTYwOGFhIiwidCI6IjI4M2VmYTcwLTVjMWMtNGRjMy04YWFjLWMyYTk0M2E2YzQ1NSJ9)
 
 #### Aba 1 – RFV (Clientes)
