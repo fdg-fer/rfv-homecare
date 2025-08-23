@@ -97,7 +97,7 @@ O recorte de 24 meses foi adotado porque os ciclos de recompra de insumos e, pri
 A base fictícia contém **1.000 registros de venda** e **67 clientes**.  
 Cada registro inclui:
 
-  <div style="text-align: center;">
+
   <img src="img/tabela_01.png" alt="Tabela_Base" width="600"/>
   <p><em>Figura 2 - Tabela de vendas no PostgresSQL</em></p>
 
@@ -113,10 +113,8 @@ No **PostgreSQL**, foram geradas as variáveis principais:
 - `ticket_medio`: valor médio gasto por pedido  
 
 
-   <div style="text-align: center;">
   <img src="img/tabela_02.png" alt="Tabela RFV" width="600"/>
   <p><em>Figura 3 - Tabela RFV no PostgresSQL</em></p>
-
 
 
 Exemplo do SQL:
