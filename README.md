@@ -19,8 +19,8 @@ O uso dessa pontuação facilita a **comparabilidade entre clientes** e permite 
 Essa fundamentação garante que os scores atribuídos na análise não foram definidos de forma arbitrária, mas seguem uma **literatura consolidada** e reconhecida na área.
 
 
- <p align="center;">
-  <img src="img/grafico_rfv.png" alt="Gráfico de Dispersão RFV" width="600"/>
+
+  <img src="img/grafico_rfv.png" alt="Gráfico de Dispersão RFV"/>
   <p><em>Figura 1 - Gráfico de dipersão da análise RFV, em que cada ponto um grupo de clientes.<br>As cores indicam os segmentos definidos (Campeões, Leais, Promissores etc.), equanto o tamanho da bolha é proporcional ao valor monetário total..</em></p>
 </div>
 
@@ -100,7 +100,7 @@ Cada registro inclui:
   <div style="text-align: center;">
   <img src="img/tabela_01.png" alt="Tabela_Base" width="600"/>
   <p><em>Figura 2 - Tabela de vendas no PostgresSQL</em></p>
-</div>
+
 
 ---
 
@@ -116,7 +116,7 @@ No **PostgreSQL**, foram geradas as variáveis principais:
    <div style="text-align: center;">
   <img src="img/tabela_02.png" alt="Tabela RFV" width="600"/>
   <p><em>Figura 3 - Tabela RFV no PostgresSQL</em></p>
-</div>
+
 
 
 Exemplo do SQL:
@@ -333,15 +333,15 @@ Um destaque relevante foram os **clientes em risco**:
 👉 **Insight estratégico**: embora pequenos em número, esses clientes têm grande impacto financeiro. Se não forem reativados, a perda pode comprometer significativamente o faturamento. Ações de retenção personalizadas, como ofertas exclusivas, atendimento consultivo e condições comerciais diferenciadas, são fundamentais para evitar churn desse grupo
 
 
- <div style="text-align: center;">
-  <img src="img/em_risco_01.png" alt="Painel RFV por Cliente" width="600"/>
-  <p><em>Figura 6 - Painel RFV por Cliente, filtrado por segmento em Risco</em></p>
-</div>
 
- <div style="text-align: center;">
-  <img src="img/em_risco_02.png" alt="Painel Visão de Produtos" width="600"/>
+  <img src="img/em_risco_01.png" alt="Painel RFV por Cliente"/>
+  <p><em>Figura 6 - Painel RFV por Cliente, filtrado por segmento em Risco</em></p>
+
+
+
+  <img src="img/em_risco_02.png" alt="Painel Visão de Produtos"/>
   <p><em>Figura 7 - Painel Visão de Produtos, filtrado por segmento em Risco</em></p>
-</div>
+
 
 
 ## 🚀 Conclusão
