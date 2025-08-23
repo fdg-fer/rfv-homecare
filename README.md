@@ -86,8 +86,15 @@ O recorte de 24 meses foi adotado porque os ciclos de recompra de insumos e, pri
 
 ---
 
-## ⚙️ Pipeline Analítico
 
+#### Dicionário de Dados
+
+- [Baixar Dicionário de Dados](https://github.com/fdg-fer/rfv-homecare/blob/main/dic/dic_rfv.xlsx)
+
+---
+
+
+## ⚙️ Pipeline Analítico
 
 ```mermaid
 graph LR
@@ -96,6 +103,8 @@ B --> C[Views SQL - RFV Base]
 C --> D[Python - Scores e Segmentos]
 D --> E[Power BI - Dashboards e Insights]
 ```
+
+---
 
 ### 1. Estrutura da Base
 A base fictícia contém **1.000 registros de venda** e **67 clientes**.  
@@ -351,11 +360,6 @@ Um destaque relevante foram os **clientes em risco**:
   <img src="img/em_risco_02.png" alt="Painel Visão de Produtos"/>
   <p><em>Figura 8 - Painel Visão de Produtos, filtrado por segmento em Risco.</em></p>
 
----
-
-#### Dicionário de Dados
-
-- [Baixar Dicionário de Dados](https://github.com/fdg-fer/rfv-homecare/blob/main/dic/dic_rfv.xlsx)
 ---
 
 ## 🚀 Conclusão
