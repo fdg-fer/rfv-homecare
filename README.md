@@ -174,7 +174,7 @@ CREATE OR REPLACE VIEW tabela_RFV AS (
 ### 3. Scores RFV (Python)
 
 A definição dos scores de 1 a 5 não foi criada de forma arbitrária.  
-Cada variável (Recência, Frequência e Valor) passou por **análise exploratória** e, a partir da distribuição estatística, foram definidos os cortes de forma **manual e contextualizada** com o negócio.
+Cada variável (Recência, Frequência e Valor) passou por uma **[análise exploratória](https://github.com/fdg-fer/rfv-clientes-b2b-hospitalar/blob/main/src/analise_exploratoria_RFV.ipynb)** e, a partir da distribuição estatística, foram definidos os cortes de forma **manual e contextualizada** com o negócio.
 
 **🔃Observação**:
 Os cortes de pontuação foram definidos com base na distribuição da base atual e critérios de negócio. Recomenda-se revisão periódica (ex.: a cada semestre) para ajustar a segmentação conforme mudanças no perfil dos clientes e do mercado.
