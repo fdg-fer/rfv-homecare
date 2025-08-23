@@ -3,6 +3,8 @@ import pandas as pd
 from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
+import numpy as np
+
 
 # Carregar variáveis do .env
 load_dotenv()
@@ -21,35 +23,33 @@ engine = create_engine(f'postgresql+psycopg2://{user}:{password}@{host}:{port}/{
 df = pd.read_sql(f'SELECT * FROM tabela_RFV', con=engine)
 
 
+#--------------------------------------------------------------------------------------------------------------#
+
 recencia = df['recencia_dias']
 
 
-def calcular_recencia_dinamica(recencia):
-    if recencia <= 16:   # 1 quartil
+def calcular_recencia(recencia):
+    if recencia <= 20:   
         return 5
-    if recencia <= 33:  # abaixo da mediana
+    if recencia <= 33:  
         return 4
-    if recencia <= 64:  # abaixo do 3 quartil
+    if recencia <= 64:  
         return 3
-    if recencia <= 146: # 4 desvios padrao
+    if recencia <= 146: 
         return 2     
     else:
         return 1
     
 
-# Depois aplica a função que atribui a pontuação, para cada valor da coluna
-df['recencia_score'] = df['recencia_dias'].apply(calcular_recencia_dinamica)
-
-#df.head(10)
+df['recencia_score'] = df['recencia_dias'].apply(calcular_recencia)
 
 #--------------------------------------------------------------------------------------------------------------#
 
 frequencia = df['qtd_pedidos']
-frequencia.describe()
 
 
-def calcular_frequencia_dinamica(frequencia):
-    if frequencia > 18:
+def calcular_frequencia(frequencia):
+    if frequencia >= 18: 
         return 5
     elif frequencia >= 16:
         return 4
@@ -60,45 +60,34 @@ def calcular_frequencia_dinamica(frequencia):
     else:
         return 1
 
-# Aplicação
-#q1_freq, q2_freq, q3_freq, limite_alto_freq = calcular_frequencia(df, 'qtd_pedidos'
-df['frequencia_score'] = df['qtd_pedidos'].apply(calcular_frequencia_dinamica)
+
+df['frequencia_score'] = df['qtd_pedidos'].apply(calcular_frequencia)
     
 #---------------------------------------------------------------------------------------------------------------#
 
 vm = df['valor_monetario']
 
 
-def calcular_vm_dinamica(vm):
-    if vm <= 120000: # média - 1 desvio
+def calcular_vm(vm):
+    if vm <= 120000: 
         return 1  
-    if vm <= 250000: # até a média
+    if vm <= 250000:
         return 2 
-    if vm <= 400000: # média + 1 desvio
+    if vm <= 420000:
         return 3  
-    if vm <= 600000: # média + 2 desvios
+    if vm <= 543000: 
         return 4  
     else:
-        return 5     # acima de 630k 
+        return 5  
+ 
+ 
+df['vm_score'] = df['valor_monetario'].apply(calcular_vm)
 
-# Aplicaçâo
-import numpy as np
-
-df['vm_score'] = df['valor_monetario'].apply(calcular_vm_dinamica)
+#---------------------------------------------------------------------------------------------------------------#
 
 
-df['rfv_score']   = df['recencia_score'] + df['frequencia_score'] + df['vm_score']
+# Y_FM: quintil sobre o score contínuo Y_FM_score
 df['Y_FM_score']  = (df['frequencia_score'] + df['vm_score']) / 2.0   # contínuo (pode ter 1.5, 2.0, 2.5, ...)
-
-# -------------------------------------------
-# 1) QUINTIS: calcule sobre o CONTÍNUO
-#    (não sobre as colunas já discretizadas 1..5)
-# -------------------------------------------
-
-# Recency: se quiser quintil do score 1..5, melhor usar as bordas fixas
-# Caso queira quintil "de verdade", use a MÉTRICA CONTÍNUA (ex.: dias de recência)
-# Exemplo abaixo usa bordas fixas para o score 1..5:
-quintis_recency_edges = [0.5, 1.5, 2.5, 3.5, 4.5, 5.5]
 
 # Y_FM: quintil sobre o score contínuo Y_FM_score
 quintis_Y_FM = np.percentile(df['Y_FM_score'], [20, 40, 60, 80, 100])
@@ -112,17 +101,10 @@ else:
     # use 0.5 como limite inferior "seguro".
     quintis_Y_FM_edges = np.concatenate(([0.5], quintis_Y_FM))
 
-# -------------------------------------------
-# 2) APLICAR cortes (labels 1..5)
-# -------------------------------------------
+#---------------------------------------------------------------------------------------------------------------#
 
-df['recency_5X'] = pd.cut(
-    df['recencia_score'],
-    bins=quintis_recency_edges,
-    labels=[1, 2, 3, 4, 5],
-    right=True,
-    include_lowest=True
-)
+df['recency_5X'] = df['recencia_score']
+
 
 df['Y_FM_5X'] = pd.cut(
     df['Y_FM_score'],
@@ -136,9 +118,7 @@ df['Y_FM_5X'] = pd.cut(
 df['recency_5X'] = df['recency_5X'].astype('Int64')
 df['Y_FM_5X']    = df['Y_FM_5X'].astype('Int64')
 
-# -------------------------------------------
-# 3) SEGMENTAÇÃO
-# -------------------------------------------
+#---------------------------------------------------------------------------------------------------------------#
 
 def segmentacao(row):
     r = row['recency_5X']
@@ -174,7 +154,7 @@ def segmentacao(row):
 df['Segmento'] = df.apply(segmentacao, axis=1)
 #print(df['Segmento'].value_counts(dropna=False))
 
-
+#---------------------------------------------------------------------------------------------------------------#
 
 df.to_sql('tabela_RFV', con=engine, if_exists='replace', index=False)
 
