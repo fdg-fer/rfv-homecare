@@ -317,8 +317,8 @@ Link do dashboard que foi publicado, permitindo exploração dinâmica dos dados
 #### Aba 2 – Produtos (RFV + Categorias)
 
 - **KPIs (cards)**: total de clientes, quantidade de produtos vendidos, valor total acumulado, ticket médio
+- **Evolução de vendas por categoria de produto**: (quantidade e valor)
 - **Ranking de produtos mais vendidos** (volume e valor)
-- **Comparativo % Hospitais × Clínicas** por categoria de produto
 - **Tabela detalhada**: produto, categoria, preço unitário, quantidade e valor total
 - **Filtro por tipo de cliente, categoria de produto e segmento de cliente** (ex.: o que os Campeões mais compram)
 
