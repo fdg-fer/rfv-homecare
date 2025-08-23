@@ -26,7 +26,6 @@ Essa fundamentação garante que os scores atribuídos na análise não foram de
 
 ## As variáveis chaves utilizadas são:
 
----
 
 ### 📆 Recência  
 A variável mais determinante da RFV. Ela descreve a etapa em que o cliente se encontra, que pode ser definida em três ciclos:
