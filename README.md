@@ -345,7 +345,7 @@ Um destaque relevante foram os **clientes em risco**:
 
 #### Dicionário de Dados
 
-- [Baixar Dicionário de Dados](https://github.com/fdg-fer/bpc-pipeline-databricks/blob/main/dic/silver.xlsx)
+- [Baixar Dicionário de Dados](https://github.com/fdg-fer/rfv-homecare/blob/main/dic/dic_rfv.xlsx)
 ---
 
 ## 🚀 Conclusão
@@ -354,6 +354,29 @@ A análise RFV permitiu **segmentar os clientes e identificar perfis estratégic
 Além disso, a segunda aba focada em **produtos** mostrou **padrões de consumo** relevantes para apoiar **estratégias comerciais**.
 
 ---
+
+## Estrutura de Pastas do Projeto
+````
+📦 rfv_home_care/
+│
+├── 📁src/                    # Scripts principais
+│   ├── tabela_RFV.sql      # Query para gerar tabela RFV inicial (SQL)
+│   ├── segmentacao_RFV.py  # Script Python para cálculo dos scores e segmentação
+│   └── dim_calendario.sql  # Script para criação da dimensão calendário
+│
+├── 📁data/                   # (Opcional) Dados fictícios utilizados no projeto
+│   └── base_vendas.csv     
+│
+├── 📁img/                    # Imagens para documentação e README
+│
+├── 📁docs/                   # Documentos de apoio
+│   └── dicionario_dados.csv
+│
+├── .gitignore              # Arquivos ignorados pelo Git
+├── README.md               # Documentação principal do projeto
+└── requirements.txt        # Dependências (caso queira registrar libs Python)
+
+```
 
 
 
